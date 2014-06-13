@@ -6,31 +6,25 @@
         <a href="http://math.stackexchange.com/users/{{user['user_id']}}">
             <img src="http://math.stackexchange.com/users/flair/{{user['user_id']}}.png" width="208" height="58" alt="profile for {{user['display_name']}} at Mathematics Stack Exchange, Q&amp;A for people studying math at any level and professionals in related fields" title="profile for Nicholas R. Peterson at Mathematics Stack Exchange, Q&amp;A for people studying math at any level and professionals in related fields">
         </a>
-        <h3>Some Statistics</h3>
-        <h4>Quality Prediction</h4>
-        <p>Positive class: likely to be closed.</p>
-            <p>Training Set:
-            {{psqstats['train_size']}}</p>
-            <p>Test Set:
-            {{psqstats['test_size']}}</p>
-            <p>Accuracy:
-            {{(100*psqstats['accuracy'])|round(2)}}%</p>
-            <p>Precision:
-            {{(100*psqstats['precision'])|round(2)}}%</p>
-            <p>Recall:
-            {{(100*psqstats['recall'])|round(2)}}%</p>
-        <h4>Interest Prediction</h4>
-        <p>Positive class: likely to be found interesting.</p>
-            <p>Training Set:
-            {{clfstats['train_size']}}</p>
-            <p>Test Set:
-            {{clfstats['test_size']}}</p>
-            <p>Accuracy:
-            {{(100*clfstats['accuracy'])|round(2)}}%</p>
-            <p>Precision:
-            {{(100*clfstats['precision'])|round(2)}}%</p>
-            <p>Recall:
-            {{(100*clfstats['recall'])|round(2)}}%</p>
+        <h3>Modify Filters</h3>
+        <form role="form" method="post" action="/list/">
+            <div class="form-group">    
+                <label for="userid">UserID</label>
+                <input class="form-control" type="text" name="userid" value="{{user['user_id']}}">
+            </div>
+            <div class="form-group">
+                <label for="quality">Desired Quality</label>
+                <input class="form-control" type="range" name="quality" min="0" max="100" value="{{quality}}">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="onlyunanswered" value="yes" checked> Only Show Unanswered Questions
+                </label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </form>
     </aside>
     <div class="col-md-8 container">
         {% for q in questions %}

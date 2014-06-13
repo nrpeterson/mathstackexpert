@@ -1,0 +1,34 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<div class="container">
+        <h1>Some Statistics</h2>
+        <h2>Quality Prediction</h3>
+        <p>Positive class: likely to be closed.</p>
+            <p>Training Set:
+            {{psqstats['train_size']}}</p>
+            <p>Test Set:
+            {{psqstats['test_size']}}</p>
+            <p>Accuracy:
+            {{(100*psqstats['accuracy'])|round(2)}}%</p>
+            <p>Precision:
+            {{(100*psqstats['precision'])|round(2)}}%</p>
+            <p>Recall:
+            {{(100*psqstats['recall'])|round(2)}}%</p>
+        <h2>Interest Prediction</h3>
+        <p>Positive class: likely to be found interesting.</p>
+        {% for uid, stats in clfstats %}
+        <h3>Userid {{uid}}</h3>
+            <p>Training Set:
+            {{stats['train_size']}}</p>
+            <p>Test Set:
+            {{stats['test_size']}}</p>
+            <p>Accuracy:
+            {{(100*stats['accuracy'])|round(2)}}%</p>
+            <p>Precision:
+            {{(100*stats['precision'])|round(2)}}%</p>
+            <p>Recall:
+            {{(100*stats['recall'])|round(2)}}%</p>
+        {% endfor %}
+    </div>
+{% endblock %}

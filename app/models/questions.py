@@ -104,7 +104,7 @@ def build_interest_classifier(userid, recreate=False):
     l.description = str(userid)
     l.date = dt.now()
     db.session.add(l)
-    db.commit()
+    db.session.commit()
 
     print("Done!")
         

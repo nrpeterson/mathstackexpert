@@ -1,6 +1,7 @@
 from time import sleep
 from datetime import datetime as dt
 import pickle
+import os
 from flask import render_template, request, g
 from app import app, db
 from app.models.questions import build_interest_classifier
@@ -53,5 +54,26 @@ def list():
 
     questions.sort(key=lambda q: q['interest'], reverse=True)
     
-    return render_template('list.html', questions=questions, user=user, psqstats=psq.stats, clfstats=clf.stats)
+    return render_template('list.html', questions=questions, user=user, quality=quality)
+
+@app.route('/analytics/')
+def analytics():
+    with open('homework.pickle', 'rb') as f:
+        psq = pickle.load(f)
+   
+    clfstats = []
+    for filename in os.listdir('data'):
+        userid = int(filename.split('.')[0])
+        with open('data/'+filename, 'rb') as f:
+            stats = pickle.load(f).stats
+        clfstats.append((userid, stats))
+
+    clfstats.sort(key=lambda s:s[1]['accuracy'], reverse=True)
+
+    return render_template('analytics.html', psqstats=psq.stats, clfstats=clfstats)
+
+
+@app.route('/slides/')
+def slides():
+    return render_template('slides.html')
 
