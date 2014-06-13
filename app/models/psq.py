@@ -1,14 +1,13 @@
 import pickle
 from random import sample, shuffle
 import numpy as np
-from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score
 from sklearn.pipeline import Pipeline
 from app import db
 from app.database import Question
-from app.models.questions import build_interest_classifier
+from app.models.helpers import preprocess_post
 
 def build_psq_classifier():
     """Build a predictor of whether or not a question will be closed as 
@@ -25,7 +24,8 @@ def build_psq_classifier():
     trf = TfidfVectorizer(
             ngram_range=(2,6),
             stop_words='english',
-            analyzer='char'
+            analyzer='char',
+            preprocessor=preprocess_post
         )
 
     #svc = LinearSVC(C=.1)

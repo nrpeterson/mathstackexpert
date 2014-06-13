@@ -1,0 +1,8 @@
+body {
+    padding-top: 50px;
+}
+
+.list-inline-bulleted li+li:before {
+    content: ' | ';
+}
+

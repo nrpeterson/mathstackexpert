@@ -1,16 +1,33 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Math.StackExpert</title>
-</head>
-
-<body>
-    <h1>Math.StackExpert</h1>
-    <form method="post" action="/list/">
-        <p>UserID: <input type="text" name="userid"></p>
-        <p><input type="submit"></p>
-    </form>
-</body>
-
-</html>
+{% extends 'layout/base.html' %}
+{% block content %} 
+<div class="jumbotron">
+    <div class="container">
+        <h1>Math.StackExpert.net</h1>
+        <p>Improving answerers' experience on Math.StackExchange by finding high-quality questions relevant to their expertise.</p>    
+    </div>
+</div>
+<div class="container row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form role="form" method="post" action="/list/">
+            <div class="form-group">    
+                <label for="userid">UserID</label>
+                <input class="form-control" type="text" name="userid">
+            </div>
+            <div class="form-group">
+                <label for="quality">Desired Quality</label>
+                <input class="form-control" type="range" name="quality" min="0" max="100" value="50">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="onlyunanswered" value="yes" checked> Only Show Unanswered Questions
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit">
+            </div>
+        </form>
+    </div>
+    <div class="col-mg-4"></div>
+</div>
+{% endblock %}

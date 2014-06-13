@@ -1,45 +1,46 @@
 import pickle
+import os.path
 from random import sample, shuffle
 import numpy as np
-from sklearn.svm import LinearSVC, SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score
 from sklearn.pipeline import Pipeline
+from sklearn.cross_validation import train_test_split
 from app import db
 from app.models.helpers import preprocess_post, is_psq
-from app.database import Question, Answer
-from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
+from app.database import Question, Answer, LastUpdated
 import logging
-import json
-import gzip
 from time import sleep
 from datetime import datetime as dt
-from urllib.parse import urlencode
-from urllib.request import urlopen
-from io import BytesIO
+from app.api import mse_api_call
 
-def build_interest_classifier(userid):
+def build_interest_classifier(userid, recreate=False):
+    filename = ''.join(['data/', str(userid), '.pickle'])
+    if not recreate and os.path.exists(filename):
+        print("Using cached classifier.")
+        with open(filename, 'rb') as f:
+            clf = pickle.load(f)
+        return clf
 
+    print("Building new interest classifier.")
     trf = TfidfVectorizer(
             ngram_range=(2,8),
             stop_words='english',
-            analyzer='char'
+            analyzer='char',
+            preprocessor=preprocess_post
         )
 
-    #nb = MultinomialNB()
-    #svc = LinearSVC(C=.1, class_weight='auto')
     reg = LogisticRegression()
     clf = Pipeline([('vectorizer', trf), ('logreg', reg)])
-    url = "http://api.stackexchange.com/2.2/users/" + str(userid) +\
-            "?order=desc&sort=reputation&site=math&" + \
-            "filter=!)RwcIFg0(Qj*_TCkjEiCRnH0&key=062O6ANtxbZRHzqy56VlFw(("
 
-    response = urlopen(url)
-    buf = BytesIO(response.read())
-    gz = gzip.GzipFile(fileobj=buf)
-    text = gz.read().decode()
-    data = json.loads(text)
+    func = '/users/' + str(userid)
+    params = {
+            'order': 'desc',
+            'sort': 'reputation',
+            'filter': '!)RwcIFg0(Qj*_TCkjEiCRnH0'
+            }
+    data = mse_api_call(func, params)
     user = data['items'][0]
     join_date = dt.fromtimestamp(user['creation_date'])
 
@@ -63,25 +64,18 @@ def build_interest_classifier(userid):
         qids.append(q.id)
 
     unans = Question.query.filter(~Question.id.in_(qids)).\
-            order_by(db.desc(Question.creation_date)).limit(num_answers).all()
+            order_by(db.desc(Question.creation_date)).\
+            limit(num_answers).all()
 
     for q in unans:
         X_raw.append(q.body_html)
         Y_raw.append(0)
 
-    shuff = list(range(len(X_raw)))
-    shuffle(shuff)
-    X_raw = [X_raw[i] for i in shuff]
-    Y_raw = [Y_raw[i] for i in shuff]
+    X_train, X_test, Y_train, Y_test = train_test_split(
+            X_raw, Y_raw, test_size=0.2)
     
-    test_size = round(.2*len(X_raw))
-    train_size = len(X_raw) - test_size
-
-    X_train = X_raw[:train_size]
-    Y_train = np.array(Y_raw[:train_size])
-
-    X_test = X_raw[train_size:]
-    Y_test = np.array(Y_raw[train_size:])
+    train_size = len(X_train)
+    test_size = len(X_test)
 
     clf.fit(X_train, Y_train)
 
@@ -103,9 +97,17 @@ def build_interest_classifier(userid):
     for k in clf.stats:
         print("  {}: {}".format(k, clf.stats[k]))
 
-    with open('questions.pickle', 'wb') as f:
+    with open(filename, 'wb') as f:
         pickle.dump(clf, f)
 
+    l = LastUpdated()
+    l.description = str(userid)
+    l.date = dt.now()
+    db.session.add(l)
+    db.commit()
+
+    print("Done!")
+        
     return clf
     
 

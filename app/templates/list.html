@@ -1,19 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Math.StackExpert</title>
-        <script type="text/x-mathjax-config">
-MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
-tex2jax: { inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" },
-TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } }, messageStyle: "none"
-});
-    </script>        
-    <script src="//beta.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>  
-
-</head>
-{% for q in questions %}
-<h1><a href="{{q.link}}">{{q.title|safe}}</a></h1>
-<h2>Interest Score: {{q.interest}}</h2>
-<h2>Quality Score: {{q.quality}}</h2>
-{{q.body|safe}}
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="row container">
+    <aside class="col-md-4 container">
+        <h3>User Information</h3>
+        <a href="http://math.stackexchange.com/users/{{user['user_id']}}">
+            <img src="http://math.stackexchange.com/users/flair/{{user['user_id']}}.png" width="208" height="58" alt="profile for {{user['display_name']}} at Mathematics Stack Exchange, Q&amp;A for people studying math at any level and professionals in related fields" title="profile for Nicholas R. Peterson at Mathematics Stack Exchange, Q&amp;A for people studying math at any level and professionals in related fields">
+        </a>
+        <h3>Some Statistics</h3>
+        <h4>Quality Prediction</h4>
+        <p>Positive class: likely to be closed.</p>
+            <p>Training Set:
+            {{psqstats['train_size']}}</p>
+            <p>Test Set:
+            {{psqstats['test_size']}}</p>
+            <p>Accuracy:
+            {{(100*psqstats['accuracy'])|round(2)}}%</p>
+            <p>Precision:
+            {{(100*psqstats['precision'])|round(2)}}%</p>
+            <p>Recall:
+            {{(100*psqstats['recall'])|round(2)}}%</p>
+        <h4>Interest Prediction</h4>
+        <p>Positive class: likely to be found interesting.</p>
+            <p>Training Set:
+            {{clfstats['train_size']}}</p>
+            <p>Test Set:
+            {{clfstats['test_size']}}</p>
+            <p>Accuracy:
+            {{(100*clfstats['accuracy'])|round(2)}}%</p>
+            <p>Precision:
+            {{(100*clfstats['precision'])|round(2)}}%</p>
+            <p>Recall:
+            {{(100*clfstats['recall'])|round(2)}}%</p>
+    </aside>
+    <div class="col-md-8 container">
+        {% for q in questions %}
+        <article>
+            <header>
+                <h3><a href="{{q.link}}">{{q.title|safe}}</a></h3>
+                <ul class="small list-inline list-inline-bulleted text-muted">
+                    <li>Interest Score: {{q.interest}}</li>
+                    <li>Quality Score: {{q.quality}}</li>
+                    <li>Creation Date: {{q.creation_date}}</li>
+                    <li>Last Activity: {{q.last_activity_date}}</li>
+                </ul>
+            </header>
+        {{q.body|safe}}
+        </article>
 {% endfor %}
+    </div>
+{% endblock %}

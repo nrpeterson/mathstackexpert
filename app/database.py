@@ -20,9 +20,21 @@ question_tags = db.Table('question_tags',
         db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
 )
 
+computed_tags = db.Table('computed_tags', 
+        db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+        db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
+)
+
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    has_synonyms = db.Column(db.Boolean)
+
+class TagSynonym(db.Model):
+    from_tag_name = db.Column(db.String(100), primary_key=True)
+    to_tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))
+    to_tag = db.relationship('Tag', 
+            backref=db.backref('synonyms', lazy='dynamic'))
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,11 +50,19 @@ class Question(db.Model):
     link = db.Column(db.String(255))
     score = db.Column(db.Integer)
     title = db.Column(db.String(150))
+    quality_score = db.Column(db.Integer)
     tag_ids = db.relationship('Tag', 
             secondary=question_tags, 
             cascade="all,delete", 
-            backref=db.backref('questions', lazy='dynamic'))
+            backref=db.backref('questions_labelled', lazy='dynamic'))
     tags = association_proxy('tag_ids', 'name', creator = get_or_create_tag)
+    historic = db.Column(db.Boolean, default=False)
+    computed_tag_ids = db.relationship('Tag',
+            secondary=computed_tags,
+            cascade="all,delete",
+            backref=db.backref('questions_computed', lazy='dynamic'))
+    computed_tags = association_proxy('computed_tag_ids', 'name',
+            creator = get_or_create_tag)
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -58,4 +78,11 @@ class Answer(db.Model):
             backref=db.backref('answers', lazy='dynamic'))
     score = db.Column(db.Integer)
 
+class UserInterestClassifier(db.Model):
+    userid = db.Column(db.Integer, primary_key=True)
+    classifier = db.Column(db.PickleType)
+    last_updated = db.Column(db.DateTime)
 
+class LastUpdated(db.Model):
+    description = db.Column(db.String(100), primary_key=True)
+    date = db.Column(db.DateTime)
