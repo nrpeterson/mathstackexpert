@@ -30,15 +30,15 @@
         {% for q in questions %}
         <article>
             <header>
-                <h3><a href="{{q.link}}">{{q.title|safe}}</a></h3>
+                <h3><a href="{{q['link']}}">{{q['title']|safe}}</a></h3>
                 <ul class="small list-inline list-inline-bulleted text-muted">
-                    <li>Interest Score: {{q.interest}}</li>
-                    <li>Quality Score: {{q.quality}}</li>
-                    <li>Creation Date: {{q.creation_date}}</li>
-                    <li>Last Activity: {{q.last_activity_date}}</li>
+                    <li>Interest Score: {{q['interest']}}</li>
+                    <li>Quality Score: {{q['quality_score']}}</li>
+                    <li>Creation Date: {{q['creation_date']}}</li>
+                    <li>Last Activity: {{q['last_activity_date']}}</li>
                 </ul>
             </header>
-        {{q.body|safe}}
+        {{q.body_html|safe}}
         </article>
 {% endfor %}
     </div>

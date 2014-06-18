@@ -1,9 +1,12 @@
 import json
 import gzip
+from datetime import datetime as dt
 from urllib.parse import urlencode
 from urllib.request import urlopen
 from io import BytesIO
 
+def from_timestamp(ts):
+    return dt.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
 def mse_api_call(func, params):
     """Fetches (and decodes/parses) API data from Math.StackExchange."""

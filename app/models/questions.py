@@ -7,13 +7,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import train_test_split
-from app import db
+from app import connect_db
 from app.models.helpers import preprocess_post, is_psq
-from app.database import Question, Answer, LastUpdated
 import logging
 from time import sleep
 from datetime import datetime as dt
-from app.api import mse_api_call
+from app.api import mse_api_call, from_timestamp
 
 def build_interest_classifier(userid, recreate=False):
     filename = ''.join(['data/', str(userid), '.pickle'])
@@ -43,34 +42,54 @@ def build_interest_classifier(userid, recreate=False):
     data = mse_api_call(func, params)
     user = data['items'][0]
     join_date = dt.fromtimestamp(user['creation_date'])
+    
+    con = connect_db()
+    cur = con.cursor()
 
-    last_ans_date = Answer.query.filter(Answer.author_id==userid).\
-            order_by(db.desc(Answer.creation_date)).first().creation_date
+    query = """SELECT creation_date FROM answers ORDER BY creation_date DESC 
+               LIMIT 1;"""
+    cur.execute(query)
+    last_ans_date = from_timestamp(cur.fetchone()['creation_date'])
 
-    first_ans_date = Answer.query.filter(Answer.author_id==userid).\
-            order_by(Answer.creation_date).first().creation_date
+    query = """SELECT creation_date FROM answers ORDER BY creation_date ASC 
+               LIMIT 1;"""
+    cur.execute(query)
+    first_ans_date = from_timestamp(cur.fetchone()['creation_date'])
 
+    query = """SELECT * FROM answers WHERE author_id=%s ORDER BY creation_date
+               DESC"""
+    cur.execute(query, [userid])
+     
     answers = Answer.query.filter(Answer.author_id==userid).\
             order_by(db.desc(Answer.creation_date))
-    num_answers = answers.count()
 
     X_raw = []
     Y_raw = []
     qids = []
-    for a in answers:
-        q = a.question
-        X_raw.append(q.body_html)
+    
+    for a in cur:
+        qids.append(a['question_id'])
+
+    query = """SELECT * FROM questions WHERE id IN ("""
+    query += ','.join(str(qid) for qid in qids)
+    query += """);"""
+
+    cur.execute(query)
+    for q in cur:
+        X_raw.append(q['body_html'])
         Y_raw.append(1)
-        qids.append(q.id)
+   
+    num_answers = len(qids)
 
-    unans = Question.query.filter(~Question.id.in_(qids)).\
-            order_by(db.desc(Question.creation_date)).\
-            limit(num_answers).all()
+    query = """SELECT * FROM questions WHERE id NOT IN ("""
+    query += ','.join(str(qid) for qid in qids)
+    query += ") ORDER BY creation_date DESC LIMIT %s;"
+    cur.execute(query, num_answers)
 
-    for q in unans:
+    for q in cur:
         X_raw.append(q.body_html)
         Y_raw.append(0)
-
+    
     X_train, X_test, Y_train, Y_test = train_test_split(
             X_raw, Y_raw, test_size=0.2)
     
@@ -100,11 +119,14 @@ def build_interest_classifier(userid, recreate=False):
     with open(filename, 'wb') as f:
         pickle.dump(clf, f)
 
-    l = LastUpdated()
-    l.description = str(userid)
-    l.date = dt.now()
-    db.session.add(l)
-    db.session.commit()
+    query = """SELECT * FROM last_updated WHERE description=%s"""
+    date = dt.now.strftime('%Y-%m-%d %H:%M:%S')
+    if cur.execute(query, userid) > 0:
+        query = "UPDATE last_updated SET date=%s WHERE description=%s;"
+    else:
+        query = "INSERT INTO last_updated (date, description) VALUES (%s, %s);"
+    cur.execute(query, date, userid)
+    con.commit()
 
     print("Done!")
         

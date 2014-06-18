@@ -1,18 +1,21 @@
 import pickle
 from random import sample, shuffle
+from time import time
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score
 from sklearn.pipeline import Pipeline
-from app import db
-from app.database import Question
+from app import connect_db
 from app.models.helpers import preprocess_post
+from app.api import from_timestamp
 
-def build_psq_classifier():
+def build_psq_classifier(end_date_str=None):
     """Build a predictor of whether or not a question will be closed as 
     homework / for 'lack of context'.  This is accomplished by building a 
     linear SVC model, trained on old post data. 
+
+    If end_date_str isn't specified, it is initialized to two weeks prior.
 
     Pickles the classifier, an instance of sklearn.svm.LinearSVC. Also stores
     some basic data metrics.
@@ -20,6 +23,13 @@ def build_psq_classifier():
     Note that we only use posts written after 2013-06-25, the date on which 
     the first such closure reason was instituted.
     """
+
+    if end_date_str == None:
+        ts = time() - 60 * 60 * 24 * 14
+        end_date_str = from_timestamp(ts)
+
+    con = connect_db()
+    cur = con.cursor()
 
     trf = TfidfVectorizer(
             ngram_range=(2,6),
@@ -32,21 +42,29 @@ def build_psq_classifier():
     reg = LogisticRegression()
 
     clf = Pipeline([('vectorizer', trf), ('reg', reg)])
+    
+    X_raw = []
+    Y_raw = []
 
-    query = Question.query.filter(Question.creation_date < '2014-05-20').\
-            filter(Question.closed_reason=='off-topic').\
-            filter(Question.closed_desc.like('%context%'))
+    query = """SELECT * FROM questions WHERE creation_date < '{}' AND 
+               closed_reason='off-topic' AND (closed_desc LIKE '%context%'
+               OR closed_desc LIKE '%homework%');""".format(end_date_str)
 
-    num_closed = query.count()
-    X_raw = [q.body_html for q in query]
-    Y_raw = [1 for q in query]
+    cur.execute(query)
 
-    query = Question.query.filter(Question.creation_date < '2014-05-20').\
-            filter(Question.closed_reason != 'off-topic').\
-            order_by(db.desc(Question.creation_date)).limit(num_closed)
+    for q in cur:
+        X_raw.append(q['body_html'])
+        Y_raw.append(1)
 
-    for q in query:
-        X_raw.append(q.body_html)
+    num_closed = len(X_raw)
+
+    query = """SELECT * FROM questions WHERE creation_date < %s AND 
+               closed_reason IS NULL ORDER BY creation_date LIMIT %s"""
+    
+    cur.execute(query, [end_date_str, num_closed])
+
+    for q in cur:
+        X_raw.append(q['body_html'])
         Y_raw.append(0)
     shuff = list(range(len(X_raw)))
     shuffle(shuff)
@@ -82,5 +100,5 @@ def build_psq_classifier():
     for k in clf.stats:
         print("  {}: {}".format(k, clf.stats[k]))
 
-    with open('homework.pickle', 'wb') as f:
+    with open('psq.pickle', 'wb') as f:
         pickle.dump(clf, f)

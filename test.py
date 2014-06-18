@@ -1,3 +1,3 @@
-from app.models.psq import build_psq_classifier
+from app.models.categories import create_tag_categories
 
-build_psq_classifier()
+create_tag_categories()

@@ -3,9 +3,8 @@ from datetime import datetime as dt
 import pickle
 import os
 from flask import render_template, request, g
-from app import app, db
+from app import app, get_db
 from app.models.questions import build_interest_classifier
-from app.database import Question
 from app.api import mse_api_call
 
 @app.route('/')
@@ -19,9 +18,8 @@ def list():
     if 'quality' in request.form:
         quality = request.form['quality']
 
-
     clf = build_interest_classifier(userid)
-    with open('homework.pickle', 'rb') as f:
+    with open('psq.pickle', 'rb') as f:
         psq = pickle.load(f)
 
     func = '/users/' + str(userid)
@@ -31,24 +29,19 @@ def list():
         return redirect(url_for('index', error="user"))
     user = data['items'][0]
 
-    qlist = Question.query.filter(Question.quality_score != None)
-    qlist = qlist.filter(Question.quality_score >= quality)
-    if 'onlyunanswered' in request.form and request.form['onlyunanswered'] == 'yes':
-        qlist = qlist.filter(Question.accepted_answer_id == None)
-    qlist = qlist.order_by(db.desc(Question.last_activity_date))
-    qlist = qlist.limit(30)
+    query = """SELECT * FROM questions WHERE quality_score IS NOT NULL
+               AND quality_score >= %s"""
+    if 'onlyunanswered' in request.form and request.form['onlyunanswered'] \
+            == 'yes':
+        query += """ AND accepted_answer_id IS NULL"""
+    query += """ ORDER BY last_activity_date DESC LIMIT 30;"""
+    con = get_db()
+    cur = con.cursor()
+    cur.execute(query, [quality])
+    
+    questions = cur.fetchall()
 
-    questions = [
-            {
-                'title':q.title,
-                'body':q.body_html,
-                'link':q.link,
-                'quality':q.quality_score,
-                'creation_date':q.creation_date.strftime('%c'),
-                'last_activity_date':q.last_activity_date.strftime('%c')
-            } for q in qlist]
-
-    interests = clf.predict_proba([q['body'] for q in questions])[:,1]
+    interests = clf.predict_proba([q['body_html'] for q in questions])[:,1]
     for i in range(len(questions)):
         questions[i]['interest'] = int(100*interests[i])
 
@@ -58,7 +51,7 @@ def list():
 
 @app.route('/analytics/')
 def analytics():
-    with open('homework.pickle', 'rb') as f:
+    with open('psq.pickle', 'rb') as f:
         psq = pickle.load(f)
    
     clfstats = []
