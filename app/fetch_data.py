@@ -2,6 +2,8 @@ import logging
 from calendar import timegm as timestamp
 from time import sleep
 from datetime import datetime as dt
+from datetime import timedelta
+from time import mktime
 from app import app, connect_db
 from app.api import mse_api_call, from_timestamp
 import pickle
@@ -39,7 +41,7 @@ def process_api_questions(items, check_quality=True):
                 'historic': True
         }
         
-        if 'owner' in item:
+        if 'owner' in item and len(item['owner']) > 0:
             question['author_id'] = item['owner']['user_id']
         else:
             question['author_id'] = None
@@ -73,14 +75,14 @@ def process_api_questions(items, check_quality=True):
         query = "DELETE FROM question_tags WHERE question_id=%s"
         cur.execute(query, [question['id']])
 
-        query = "SELECT id FROM tags WHERE tag.name IN ("
-        query += ','.join(item['tags'])
+        query = "SELECT id FROM tags WHERE tags.name IN ("
+        query += ','.join("'{}'".format(t) for t in item['tags'])
         query += ");"
         cur.execute(query)
         tagids = [t['id'] for t in cur]
         query = "INSERT INTO question_tags (question_id, tag_id) VALUES (%s,%s)"
         for tagid in tagids:
-            cur.execute(query, [question['id'], tagid)
+            cur.execute(query, [question['id'], tagid])
 
         if 'answers' in item:
             answers = []
@@ -225,18 +227,23 @@ def fetch_questions_and_answers(first_page = 1):
 
 def fetch_recent_questions():
     logging.info('Fetching recent questions...')
-    q = LastUpdated.query.filter_by(description='questions').first()
-    if not q:
-        q = LastUpdated()
-        q.description = 'questions'
-        q.date = dt.fromtimestamp(0)
-
+    
+    con = connect_db()
+    cur = con.cursor()
+    query = "SELECT * FROM last_updated WHERE description='questions'"
+    if cur.execute(query) > 0:
+        ts = cur.fetchone()['date']
+    else:
+        ts = dt.fromtimestamp(60)
+        cur.execute("""INSERT INTO last_updated (description, date) VALUES 
+        ('questions', %s);""", [ts])
+    
     func = "/questions"
     params = {
             'page': 1,
             'pagesize': 100,
             'order': 'desc',
-            'fromdate': timestamp(q.date.utctimetuple()) - 60,
+            'fromdate': int(mktime((ts - timedelta(seconds=60)).timetuple())),
             'sort': 'activity',
             'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }

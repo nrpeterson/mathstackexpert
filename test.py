@@ -1,3 +1,3 @@
-from app.models.categories import create_tag_categories
+from app.fetch_data import fetch_recent_questions
 
-create_tag_categories()
+fetch_recent_questions()
