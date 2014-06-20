@@ -106,7 +106,6 @@ def api_categories():
 def api_questions():
     con = get_db()
     cur = con.cursor()
-    print(request.args)
     if 'cats' not in session:
         session['cats'] = dict()
     for k,v in request.args.items():
@@ -114,12 +113,10 @@ def api_questions():
             session['quality'] = int(v)
         else:
             session['cats'][k] = int(v)
-    
     con = get_db()
     cur = con.cursor()
     cur.execute("SELECT name FROM categories ORDER BY id ASC;")
     cats = [q['name'] for q in cur]
-
     if 'quality' not in session:
         session['quality'] = 50
         

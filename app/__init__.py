@@ -1,8 +1,9 @@
 import pymysql
+import sys
 from flask import Flask, g, request, url_for
 
 app = Flask(__name__)
-app.config.from_pyfile('../settings/development.cfg')
+app.config.from_pyfile('../settings/production.cfg')
 
 def connect_db():
     try:
