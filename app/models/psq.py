@@ -2,6 +2,7 @@ import pickle
 from random import sample, shuffle
 from time import time
 import numpy as np
+from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score

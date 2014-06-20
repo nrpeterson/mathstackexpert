@@ -1,11 +1,43 @@
 body {
-    padding-top: 50px;
+    padding-top:50px;
 }
 
-.list-inline-bulleted li+li:before {
-    content: ' | ';
+#quality, #categories {
+    position: absolute;
+    top: 80px;
+    padding: 20px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    background: white;
+    border: 3px outset #999999;
+    min-height: 60%;
+    border-radius: 5px 5px 5px 5px;
 }
 
-article img {
-    max-width: 100%;
+#questions {
+    position: absolute;
+    top: 70px;
+    padding-top: 20px;
+    left: 0px;
+    right: 0px;
+    background: white;
+}
+
+#catlist
+{
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+#catlist li
+{
+    width: 19%;
+    min-width: 200px;
+    float: left;
+    border: 1px solid #999999;
+    border-radius: 5px 5px 5px 5px;
+    margin: 5px;
+    padding: 5px;
 }

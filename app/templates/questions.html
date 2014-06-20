@@ -1,0 +1,142 @@
+{% extends 'layout/base.html' %}
+
+{% block extranav %}
+<ul class="navbar-right">
+    <button id="settings-button" class="navbar-btn btn btn-primary" style="opacity: 0;" onclick="toQualityPage()">Settings</button>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div id="quality" class="container" style="opacity: 1; z-index: 3;">
+    <header>
+        <h3>Question 1:</h3>
+        <h2 class="text-primary">How much effort do you want to see in questions?</h2>
+    </header>
+    <div class="container">
+        <h4>Maybe you'll answer any question you run across; maybe you really want to see the asker's thought process and analysis.</h4>
+        <h4 class="text-primary">It's up to you!</h4>
+        <p> (And don't worry - you can change your mind later!)</p>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form role="form" id="qualityForm">
+                    <div class="form-group" style="margin-top: 40px; margin-bottom: 40px; border: 2px solid #bbbbbb; padding: 30px; border-radius: 5px 5px 5px 5px;">
+                        <label for="quality">Desired Quality:</label><input type="range" min="0" max="100" value="50" name="quality" onchange='fetchQuestions()'>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4 text-right"><button class="btn btn-primary" onclick="toCategoriesPage()">Next: Choose Categories <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        </div>
+    </div>
+</div>
+
+<div id="categories" style="opacity: 0; z-index: 1;" class="container">
+    <header>
+        <h3>Question 2:</h3>
+        <h2 class="text-primary">What are your favorite areas of mathematics?</h2>
+    </header>
+    <div class="container">
+        <h4>We've grouped question tags based on the way they're used on Math.StackExchange. This way, you can select general categories of questions you like, without fussing around with 1000+ tags.</h4>
+        <form role="form" id="categoryForm">
+        <ul id="catlist" class="clearfix">
+        </ul>
+        </form> 
+        <div class="row">
+            <div class="col-md-4"><button class="btn btn-primary" onclick="toQualityPage()"><span class="glyphicon glyphicon-chevron-left"></span> Wait! I changed my mind!</button></div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-right"><button class="btn btn-primary" onclick="toQuestionsPage()">That's it!  Check out your questions <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        </div>
+    </div>
+</div>
+<div id="questions" style="opacity: .5; z-index: 0;" class="container">
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='vendor/d3/d3.min.js')}}"></script>
+<script>
+var qualityPage = d3.select("#quality");
+var categoriesPage = d3.select("#categories");
+var questionsPage = d3.select("#questions");
+var settingsButton = d3.select("#settings-button");
+var catvals = {}
+var categoryList = []
+function fetchCategoryList() {
+    d3.json('{{url_for('api_categories')}}', function(error, json) {
+        if (error) return console.warn(error);
+        categoryList = json;
+        for (cat in json) {
+            catvals[cat] = 0;
+        }
+        cats = categoriesPage.select('ul').selectAll('li').data(json)
+        cats.exit().remove();
+
+        items = cats.enter().append('li').attr('class', 'form-group')
+        items.append('input').attr('type','checkbox')
+            .attr('name', 'category')
+            .attr('value', function(d) {return d;})
+            .attr('onchange', 'fetchQuestions()');
+        items.append('label').text(function(d) {return d;});
+    });  
+}
+function fetchQuestions() {
+    params = {};
+    params['quality'] = parseInt(document.forms['qualityForm']['quality'].value);
+    catboxes = document.getElementsByName('category');
+    for (i=0; i < catboxes.length; i++) {
+        if (catboxes[i].checked == true) {
+            params[catboxes[i]['value']] = 1;
+        }
+        else {
+            params[catboxes[i]['value']] = 0;
+        }
+    }
+    querystr = $.param(params);
+    url = '{{url_for('api_questions')}}?' + querystr;
+    d3.json(url, function(error, json) {
+        if (error) return console.warn(error);
+        qs = questionsPage.selectAll('article').data(json, function(d,i) {return [d.id,i];});
+        qs.exit().remove();
+        
+        articles = qs.enter().append('article')
+        headers = articles.append('header')
+            .attr('class', 'container');
+        headers.append('h3')
+                .append('a')
+                .attr('href', function(d) {return d.link;})
+                .html(function(d) {return d.title;});
+        articles.append('div').attr('class', 'container')
+            .html(function(d) { return d.body_html; });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        articles.selectAll('img').style('max-width', '80%');
+    });
+}
+
+
+fetchCategoryList();
+fetchQuestions();
+
+function toQualityPage() {
+    qualityPage.style("opacity", 1).style("z-index", 3);
+    categoriesPage.style("opacity", 0).style("z-index", 1);
+    questionsPage.style("opacity", .5).style("z-index", 2);
+    settingsButton.style("opacity", 0);
+}
+
+function toCategoriesPage() {
+    qualityPage.style("opacity", 0).style("z-index", 1);
+    categoriesPage.style("opacity", 1).style("z-index", 3);
+    questionsPage.style("opacity", .5).style("z-index", 2);
+    settingsButton.style("opacity", 0);
+}
+
+function toQuestionsPage() {
+    qualityPage.style("opacity", 0).style("z-index", 1);
+    categoriesPage.style("opacity", 0).style("z-index", 1);
+    questionsPage.style("opacity", 1).style("z-index", 2);
+    settingsButton.style("opacity", 1);
+}
+</script>
+{% endblock %}

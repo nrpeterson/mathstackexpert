@@ -92,7 +92,9 @@ def build_interest_classifier(userid, recreate=False):
     
     X_train, X_test, Y_train, Y_test = train_test_split(
             X_raw, Y_raw, test_size=0.2)
+   
     
+
     train_size = len(X_train)
     test_size = len(X_test)
 

@@ -20,7 +20,7 @@
 });
 </script>        
 
-<script src="//beta.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>  
+<script src="http://beta.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>  
 
   </head>
   <body>
@@ -44,6 +44,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/analytics">Analytics</a></li>
           </ul>
+          {% block extranav %}{% endblock %}
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>  
@@ -54,6 +55,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{url_for('static', filename='vendor/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-    {% block scripts %} {% endblock %}
+{% block scripts %} {% endblock %}
   </body>
 </html>

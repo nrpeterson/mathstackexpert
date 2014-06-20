@@ -1,0 +1,33 @@
+{% extends 'layout/base.html' %}
+{% block content %} 
+<div class="jumbotron">
+    <div class="container">
+        <h1>Math.Stack<span class="text-primary">Expert</span></h1>
+        <p>Finding you high-quality questions on Math.StackExchange that you'll want to answer!</p>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <h3>Getting started is as easy as answering just two questions:</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class='text-primary'>How much effort do you want to see in questions?</h4>
+            <p>We assign a "quality" score to every question, based on how likely it is to be closed "for lack of context", and let you filter out questions that don't make the cut.</p>
+        </div>
+        <div class="col-md-6">
+            <h4 class='text-primary'>What are your favorite areas of mathematics?</h4>
+            <p>We have broken down the <em>many</em> tags on Math.StackExchange in to a small number of categories, representing broad areas of mathematics.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h3>What are you waiting for?</h3>
+            <p><a class="btn btn-primary form-control" href="{{url_for('questions')}}">Get started now!</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
