@@ -1,310 +1,222 @@
-{% extends "layout/base.html" %}
+<!doctype html>html lang="en">
 
-{% block head %}
-  <link href="{{ url_for('static', filename='vendor/components-revealjs/css/reveal.min.css') }}" rel="stylesheet">
-{% endblock %}
+	<head>
+		<meta charset="utf-8">
 
-{% block content %}
-  <div class="reveal">
-    <div class="slides">
-      <section>
-        <h1>Reveal.js</h1>
-        <h3>HTML Presentations Made Easy</h3>
-        <p>
-          <small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
-        </p>
-      </section>
+		<title>reveal.js - The HTML Presentation Framework</title>
 
-      <section>
-        <h2>Heads Up</h2>
-        <p>
-          reveal.js is a framework for easily creating beautiful presentations using HTML. You'll need a browser with
-          support for CSS 3D transforms to see it in its full glory.
-        </p>
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
 
-        <aside class="notes">
-          Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-        </aside>
-      </section>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-      <!-- Example of nested vertical slides -->
-      <section>
-        <section>
-          <h2>Vertical Slides</h2>
-          <p>
-            Slides can be nested inside of other slides,
-            try pressing <a href="#" class="navigate-down">down</a>.
-          </p>
-          <a href="#" class="image navigate-down">
-            <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-          </a>
-        </section>
-        <section>
-          <h2>Basement Level 1</h2>
-          <p>Press down or up to navigate.</p>
-        </section>
-        <section>
-          <h2>Basement Level 2</h2>
-          <p>Cornify</p>
-          <a class="test" href="http://cornify.com">
-            <img width="280" height="326" src="https://s3.amazonaws.com/hakim-static/reveal-js/cornify.gif" alt="Unicorn">
-          </a>
-        </section>
-        <section>
-          <h2>Basement Level 3</h2>
-          <p>That's it, time to go back up.</p>
-          <a href="#/2" class="image">
-            <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(180deg);">
-          </a>
-        </section>
-      </section>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-      <section>
-        <h2>Slides</h2>
-        <p>
-          Not a coder? No problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slid.es" target="_blank">http://slid.es</a>.
-        </p>
-      </section>
+                <link rel="stylesheet" href="{{url_for('static', filename='vendor/reveal.js-2.6.2/css/reveal.min.css')}}">
+                <link rel="stylesheet" href="{{url_for('static', filename='vendor/reveal.js-2.6.2/css/theme/default.css')}}" id="theme">
 
-      <section>
-        <h2>Point of View</h2>
-        <p>
-          Press <strong>ESC</strong> to enter the slide overview.
-        </p>
-        <p>
-          Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-        </p>
-      </section>
+		<!-- For syntax highlighting -->
+                <link rel="stylesheet" href="{{url_for('static', filename='vendor/reveal.js-2.6.2/lib/css/zenburn.css')}}">
 
-      <section>
-        <h2>Works in Mobile Safari</h2>
-        <p>
-          Try it out! You can swipe through the slides and pinch your way to the overview.
-        </p>
-      </section>
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
 
-      <section>
-        <h2>Marvelous Unordered List</h2>
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section class="" data-id="62962c2af536c1f8170a8347abad5924" data-background-color="rgba( 12, 25, 77, 0.6)">
+        <h1>
+            <font color="#ffffff">
+                <br>
+            </font>
+        </h1>
+        <h1>
+            <font color="#ffffff">Math.Stack</font>
+            <font color="#0000ff">Expert</font>
+        </h1>
+        <div>Finding you high-quality questions on Math.StackExchange that you'll WANT to answer!</div>
+        <div>
+            <br>
+        </div>
+        <div>
+            <br>
+        </div>
+        <div>Nicholas Peterson</div>
+        <div>Fellow, Insight Data Science</div>
+    </section>
+    <section class="" data-id="87eda959e992d021f25b4544945f8866">
+        <h2>The problem</h2>
+        <div>
+            <img src="http://math.stackexchange.com/users/flair/81839.png?theme=clean" style="width: 281.72912373924214px; height: 78.54625741065112px; max-height: none; max-width: none;">
+            <br>
+        </div>
+        <div>I spend lots of time on Math.StackExchange.</div>
+        <div>
+            <br>
+        </div>
+        <div>(I know what you're thinking... but that's NOT the problem.)</div>
+        <div>
+            <br>
+        </div>
+        <div>Unlike most, I'm there to ANSWER questions.</div>
+        <div>
+            <br>
+        </div>
+        <div>There are two things that make this tough.</div>
+    </section>
+    <section class="" data-id="8748f07f260cf03b0af9c46c461e7023">
+        <h2>1. Low-effort questions</h2>
+        <div>
+            <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481540/Screenshot_from_2014-06-20_09_22_10.png" style="width: 718.7586901286306px; height: 199.69572553232956px; max-height: none; max-width: none;">
+            <br>
+        </div>
+        <div>vs</div>
+        <div>
+            <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481553/Screenshot_from_2014-06-20_09_30_00.png" style="width: 716.1852545694582px; height: 227.82908006939152px; max-height: none; max-width: none;">
+            <br>
+        </div>
+    </section>
+    <section class="" data-id="88bf093475555b68ab3dab49e65cc060">
+        <h2>2. Finding questions</h2>
+        <div>
+            <ul>
+                <li>
+                    <span style="text-align: center;">Can set favorite tags, but can't filter by them.</span>
+                </li>
+                <li>
+                    <span style="text-align: center;">There are 1000+ different tags,.</span>
+                </li>
+                <li>
+                    <span style="text-align: center;">Askers don't necessarily follow natural tag hierarchy:</span>
+                    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481582/Screenshot_from_2014-06-20_09_47_00.png" style="text-align: center; width: 822.3666701867394px; height: 277.8812817557027px; max-height: none; max-width: none;">
+                </li>
+            </ul>
+            <br>
+        </div>
+        <div>(It is graph theory, but not combinatorics?)</div>
+    </section>
+    <section class="" data-id="d707db228c2f01475fe3029830338322">
+        <h2>My solution</h2>
+        <div>
+            <br>
+        </div>
+        <h1>Math.stack<font color="#0000ff">expert</font>
+    </h1>
+    <div>
         <ul>
-          <li>No order here</li>
-          <li>Or here</li>
-          <li>Or here</li>
-          <li>Or here</li>
+            <li>
+                <font color="#ffffff">Clustered tags into manageable 'categories' representing broad areas of mathematics<br>
+                    <br>
+                </font>
+            </li>
+            <li>
+                <font color="#ffffff">
+                    <span>Used voting data and question text to build a predictor (logistic regression model) for whether or not a question will be closed for lack of effort.</span>
+                </font>
+            </li>
         </ul>
-      </section>
-
-      <section>
-        <h2>Fantastic Ordered List</h2>
-        <ol>
-          <li>One is smaller than...</li>
-          <li>Two is smaller than...</li>
-          <li>Three!</li>
-        </ol>
-      </section>
-
-      <section id="transitions">
-        <h2>Transition Styles</h2>
-        <p>
-          You can select from different transitions, like: <br>
-          <a href="?transition=cube#/transitions">Cube</a> -
-          <a href="?transition=page#/transitions">Page</a> -
-          <a href="?transition=concave#/transitions">Concave</a> -
-          <a href="?transition=zoom#/transitions">Zoom</a> -
-          <a href="?transition=linear#/transitions">Linear</a> -
-          <a href="?transition=fade#/transitions">Fade</a> -
-          <a href="?transition=none#/transitions">None</a> -
-          <a href="?#/transitions">Default</a>
-        </p>
-      </section>
-
-      <section id="themes">
-        <h2>Themes</h2>
-        <p>
-          Reveal.js comes with a few themes built in: <br>
-          <a href="?#/themes">Default</a> -
-          <a href="?theme=sky#/themes">Sky</a> -
-          <a href="?theme=beige#/themes">Beige</a> -
-          <a href="?theme=simple#/themes">Simple</a> -
-          <a href="?theme=serif#/themes">Serif</a> -
-          <a href="?theme=night#/themes">Night</a> <br>
-          <a href="?theme=moon#/themes">Moon</a> -
-          <a href="?theme=solarized#/themes">Solarized</a>
-        </p>
-        <p>
-          <small>
-            * Theme demos are loaded after the presentation which leads to flicker. In production you should load your theme in the <code>&lt;head&gt;</code> using a <code>&lt;link&gt;</code>.
-          </small>
-        </p>
-      </section>
-
-      <section>
-        <h2>Global State</h2>
-        <p>
-            Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-            will be added as a class to the document element when the slide is open. This lets you
-            apply broader style changes, like switching the background.
-        </p>
-      </section>
-
-      <section data-state="customevent">
-        <h2>Custom Events</h2>
-        <p>
-          Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-        </p>
-        <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
-            Reveal.addEventListener( 'customevent', function() {
-            console.log( '"customevent" has fired' );
-            } );
-        </code></pre>
-      </section>
-
-      <section>
-        <section data-background="#007777">
-          <h2>Slide Backgrounds</h2>
-          <p>
-            Set <code>data-background="#007777"</code> on a slide to change the full page background to the given color. All CSS color formats are supported.
-          </p>
-          <a href="#" class="image navigate-down">
-            <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-          </a>
-        </section>
-        <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png">
-          <h2>Image Backgrounds</h2>
-          <pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-        </section>
-        <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" data-background-repeat="repeat" data-background-size="100px">
-          <h2>Repeated Image Backgrounds</h2>
-          <pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-        </section>
-      </section>
-
-      <section data-transition="linear" data-background="#4d7e65" data-background-transition="slide">
-        <h2>Background Transitions</h2>
-        <p>
-          Pass reveal.js the <code>backgroundTransition: 'slide'</code> config argument to make backgrounds slide rather than fade.
-        </p>
-      </section>
-
-      <section data-transition="linear" data-background="#8c4738" data-background-transition="slide">
-        <h2>Background Transition Override</h2>
-        <p>
-          You can override background transitions per slide by using <code>data-background-transition="slide"</code>.
-        </p>
-      </section>
-
-      <section>
-        <h2>Clever Quotes</h2>
-        <p>
-          These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-          &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-        </p>
-        <blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-          &ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-          reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-        </blockquote>
-      </section>
-
-      <section>
-        <h2>Pretty Code</h2>
-          <pre><code data-trim contenteditable>
-            function linkify( selector ) {
-                if( supports3DTransforms ) {
-
-                    var nodes = document.querySelectorAll( selector );
-
-                    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-                        var node = nodes[i];
-
-                        if( !node.className ) {
-                            node.className += ' roll';
-                        }
-                    }
-                }
-            }
-          </code></pre>
-        <p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-      </section>
-
-      <section>
-        <h2>Intergalactic Interconnections</h2>
-        <p>
-          You can link between slides internally,
-          <a href="#/2/3">like this</a>.
-        </p>
-      </section>
-
-      <section>
-        <section id="fragments">
-          <h2>Fragmented Views</h2>
-          <p>Hit the next arrow...</p>
-          <p class="fragment">... to step through ...</p>
-          <ol>
-            <li class="fragment"><code>any type</code></li>
-            <li class="fragment"><em>of view</em></li>
-            <li class="fragment"><strong>fragments</strong></li>
-          </ol>
-
-          <aside class="notes">
-            This slide has fragments which are also stepped through in the notes window.
-          </aside>
-        </section>
-        <section>
-          <h2>Fragment Styles</h2>
-          <p>There's a few styles of fragments, like:</p>
-          <p class="fragment grow">grow</p>
-          <p class="fragment shrink">shrink</p>
-          <p class="fragment roll-in">roll-in</p>
-          <p class="fragment fade-out">fade-out</p>
-          <p class="fragment highlight-red">highlight-red</p>
-          <p class="fragment highlight-green">highlight-green</p>
-          <p class="fragment highlight-blue">highlight-blue</p>
-          <p class="fragment current-visible">current-visible</p>
-          <p class="fragment highlight-current-blue">highlight-current-blue</p>
-        </section>
-      </section>
-
-      <section>
-        <h2>Spectacular image!</h2>
-        <a class="image" href="http://lab.hakim.se/meny/" target="_blank">
-          <img width="320" height="299" src="http://s3.amazonaws.com/hakim-static/portfolio/images/meny.png" alt="Meny">
-        </a>
-      </section>
-
-      <section>
-        <h2>Export to PDF</h2>
-        <p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
-        <script>
-          document.getElementById('slideshare').attributeName = 'allowfullscreen';
-        </script>
-      </section>
-
-      <section>
-        <h2>Take a Moment</h2>
-        <p>
-          Press b or period on your keyboard to enter the 'paused' mode. This mode is helpful when you want to take distracting slides off the screen
-          during a presentation.
-        </p>
-      </section>
-
-      <section>
-        <h2>Stellar Links</h2>
-        <ul>
-          <li><a href="http://slid.es">Try the online editor</a></li>
-          <li><a href="https://github.com/hakimel/reveal.js">Source code on GitHub</a></li>
-          <li><a href="http://twitter.com/hakimel">Follow me on Twitter</a></li>
-        </ul>
-      </section>
-
-      <section>
-        <h1>THE END</h1>
-        <h3>BY Hakim El Hattab / hakim.se</h3>
-      </section>
     </div>
-  </div>
-{% endblock %}
+</section>
+<section class="" data-id="e9335fddaa8e343c0cc10dddf81772e3">
+    <h2>Methods/Analysis</h2>
+    <h3 style="text-align: left; ">Predictor:</h3>
+    <div>
+        <ul>
+            <li>Used 4916 questions, half closed.</li>
+            <li>Tuned parameters with cross-validation (optimized for recall)</li>
+            <li>Held back 20% as test set:</li>
+            <ul>
+                <li>Accuracy: 85.66%</li>
+                <li>Recall: 87.47%</li>
+                <li>Precision: 84.57%<br>
+                    <br>
+                </li>
+            </ul>
+        </ul>
+    </div>
+    <h3 style="text-align: left; ">Clustering:</h3>
+    <div>
+        <ul>
+            <li>Used sklearn AffinityPropogation algorithm</li>
+            <li>Fed in similarity matrix built from co-occurrence data</li>
+        </ul>
+    </div>
+</section>
+<section class="" data-id="626e3d2ca792200a616f68610530cde3">
+    <h2>I'm <font color="#ffffff">Nicholas Peterson.</font>
+</h2>
+<a href="http://www.mtu.edu/">
+</a>
+<div class="absolute-element" style="position: absolute; width: 10px; height: 46.59375px; z-index: 4; left: 593px; top: 181px;">
+    <font color="#ffffff">
+        <br>
+    </font>
+</div>
+<div class="fragment" data-fragment-index="0">
+    <font color="#ffffff">
+        <br>
+    </font>
+</div>
+<h2 style="font-style: normal; font-variant: normal; position: absolute; width: 317.3125px; height: 98.671875px; z-index: 4; left: 72px; top: 131px;" class="absolute-element">
+    <img src="http://www.mtu.edu/mtu_resources/images/logos/2/michigan-tech-logo.png">
+</h2>
+<img src="http://www.osu.edu/assets/site/images/osu-web-header-horiz.png" class="absolute-element" style="position: absolute; max-height: none; max-width: none; width: 351.296875px; height: 121.296875px; z-index: 4; left: 539px; top: 99px;">
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481687/erdos-renyi.png" style="width: 270.515625px; height: 270.515625px; max-height: none; max-width: none; position: absolute; z-index: 4; left: 334px; top: 308px;" class="absolute-element">
+</section>
 
-{% block scripts %}
-  <!-- Presentation Libraries -->
-  <script src="{{ url_for('static', filename='vendor/components-revealjs/lib/js/head.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/components-revealjs/js/reveal.min.js') }}"></script>
-{% endblock %}
+			</div>
+
+		</div>
+
+                <script src="{{url_for('static', filename='vendor/reveal.js-2.6.2/lib/js/head.min.js')}}"></script>
+                <script src="{{url_for('static', filename='vendor/reveal.js-2.6.2/js/reveal.min.js')}}"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
