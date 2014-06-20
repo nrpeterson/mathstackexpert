@@ -21,6 +21,10 @@ from app.api import mse_api_call
 
 @app.route('/')
 def index():
+    if 'quality' in session:
+        del session['quality']
+    if 'weights' in session:
+        del session['weights']
     return render_template('start.html')
 
 @app.route('/questions/')

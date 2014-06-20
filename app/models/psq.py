@@ -39,7 +39,6 @@ def build_psq_classifier(end_date_str=None):
             preprocessor=preprocess_post
         )
 
-    #svc = LinearSVC(C=.1)
     reg = LogisticRegression()
 
     clf = Pipeline([('vectorizer', trf), ('reg', reg)])
@@ -81,9 +80,24 @@ def build_psq_classifier(end_date_str=None):
     X_test = X_raw[train_size:]
     Y_test = np.array(Y_raw[train_size:])
 
-    clf.fit(X_train, Y_train)
+    params = [
+            {
+                'vectorizer__ngram_range': [(2,2), (2,4), (2,6), (2,8)],
+                'reg__penalty': ['l1', 'l2'],
+                'reg__C': [.01, .03, .1, .3, 1, 3, 10, 30, 100],
+                'reg__intercept_scaling': [.1,1,10,100]
+            }
+        ]
 
+
+    gridsearch = GridSearchCV(clf, params, scoring='recall', n_jobs=4)
+
+    gridsearch.fit(X_train, Y_train)
+    clf = gridsearch.best_estimator_
     print("Done training classifier!")
+    print("Parameters from CV:")
+    for k,v in gridsearch.best_params_.items():
+        print("{}: {}".format(k,v))
     preds = clf.predict(X_test)
     print("Done making predictions for test set.")
     print("Results:")

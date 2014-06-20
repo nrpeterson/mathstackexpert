@@ -20,7 +20,7 @@ def create_tag_categories():
         'solution-verification', 'definition', 'examples-counterexamples',
         'mathematica', 'wolfram-alpha', 'maple', 'matlab', 'sage', 'octave',
         'floor-function', 'ceiling-function', 'article-writing', 'publishing',
-        'combinatorial-species')
+        'combinatorial-species', 'gromov-hyperbolic-spaces')
         GROUP BY tags.name
     ) AS T
     JOIN question_tags AS Q ON T.id=Q.tag_id
@@ -70,12 +70,6 @@ def create_tag_categories():
     labels = cluster.fit_predict(sim)
 
     classes = sorted(list(set(labels)))
-    
-    for c in classes:
-        ctag_indices = np.nonzero(labels==c)
-        ctag_ids = tag_ids[ctag_indices]
-        ctag_names = tag_names[ctag_indices]
-        for t in ctag_names:
 
     catnames = {i:tag_names[cluster.cluster_centers_indices_[i]] for i in \
             range(len(cluster.cluster_centers_indices_))}
