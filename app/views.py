@@ -8,23 +8,9 @@ from app import app, get_db
 from app.models.questions import build_interest_classifier
 from app.api import mse_api_call
 
-#@app.route('/')
-#def index():
-#    con = get_db()
-#    cur = con.cursor()
-#    cur.execute("SELECT * FROM categories ORDER BY id ASC;")
-#    cat_names = dict()
-#    for q in cur:
-#        cat_names[q['id']] = q['name']
-#    
-#    return render_template('index.html', cat_names=cat_names)
-
 @app.route('/')
 def index():
-    if 'quality' in session:
-        del session['quality']
-    if 'weights' in session:
-        del session['weights']
+    session.clear()
     return render_template('start.html')
 
 @app.route('/questions/')
@@ -124,38 +110,35 @@ def api_questions():
         query = """
 SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, Q.title,
 Q.quality_score, GROUP_CONCAT(DISTINCT C.name) AS categories
-FROM (
-    SELECT * FROM questions WHERE accepted_answer_id IS NULL AND
-    quality_score >= %s
-    ORDER BY last_activity_date DESC LIMIT 1000
-) AS Q
+FROM questions AS Q
 JOIN question_tags AS QT ON QT.question_id = Q.id
 JOIN tag_categories AS TC ON TC.tag_id = QT.tag_id
 JOIN categories AS C ON C.id = TC.category_id
+WHERE Q.accepted_answer_id IS NULL
+AND Q.quality_score >= %s
 GROUP BY Q.id
 ORDER BY Q.last_activity_date DESC
 LIMIT 30;"""
 
     else:
+        catlist = ','.join("'{}'".format(cat) for cat in session['cats'] if \
+                session['cats'][cat] == 1)
         query = """
-SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, Q.title, 
-Q.quality_score, GROUP_CONCAT(DISTINCT C.name) AS categories,
-MAX(CASE WHEN """
-        query += " WHEN ".join('C.name="{}" THEN {}'.format(k,session['cats'][k]) for k in sorted(session['cats'].keys()))
-        query += """ ELSE 0 END) AS desired 
-FROM (
-    SELECT * FROM questions WHERE accepted_answer_id IS NULL AND
-    quality_score >= %s
-    ORDER BY last_activity_date DESC LIMIT 1000
-    ) AS Q
-JOIN question_tags AS QT ON Q.id=QT.question_id
-JOIN tag_categories AS TC ON QT.tag_id=TC.tag_id
-JOIN categories AS C ON TC.category_id=C.id
+SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, 
+Q.title, Q.quality_score, Q.author_id, GROUP_CONCAT(DISTINCT C.name) 
+AS categories
+FROM categories AS C
+JOIN tag_categories AS TC ON C.id=TC.category_id
+JOIN question_tags AS QT ON QT.tag_id=TC.tag_id
+JOIN questions AS Q ON Q.id=QT.question_id
+WHERE C.name IN ({})
+AND Q.quality_score >= %s
+AND Q.accepted_answer_id IS NULL
 GROUP BY Q.id
-HAVING desired=1
 ORDER BY last_activity_date DESC
-LIMIT 30;
-    """
+LIMIT 30
+""".format(catlist)
+    print(query)
     cur.execute(query, session['quality'])
     result = cur.fetchall()
     for i in range(len(result)):
