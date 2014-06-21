@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>Math.StackExpert by Nicholas R. Peterson</title>
 
 		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 		<meta name="author" content="Hakim El Hattab">
@@ -61,14 +61,10 @@
     </section>
     <section class="" data-id="87eda959e992d021f25b4544945f8866">
         <h2>The problem</h2>
-<div>
-<img src="http://math.stackexchange.com/users/flair/81839.png?theme=clean" style="width: 281.72912373924214px; height: 78.54625741065112px; max-height: none; max-width: none;">
-        <br>
-</div>
 <div>I spend lots of time on Math.StackExchange.</div>
 <div>
-        <br>
-    </div>
+<img src="http://math.stackexchange.com/users/flair/81839.png?theme=clean" style="width: 281.72912373924214px; height: 78.54625741065112px; max-height: none; max-width: none;">
+</div>
 <div>(I know what you're thinking... but that's NOT the problem.)</div>
 <div>
     <br>
@@ -205,12 +201,12 @@
 
 				// Optional libraries used to extend on reveal.js
 				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/lib/js/classList.js')}}', condition: function() { return !document.body.classList; } },
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/plugin/markdown/marked.js')}}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/plugin/markdown/markdown.js')}}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/plugin/highlight/highlight.js')}}', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/plugin/zoom-js/zoom.js')}}', async: true, condition: function() { return !!document.body.classList; } },
+                                        { src: '{{url_for('static', filename='vendor/reveal.js-2.6.2/plugin/notes/notes.js')}}', async: true, condition: function() { return !!document.body.classList; } }
 				]
 			});
 
