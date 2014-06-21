@@ -6,7 +6,7 @@ from app.models.questions import build_interest_classifier
 from app.api import mse_api_call
 
 @app.route('/')
-def index():
+def start():
     session.clear()
     return render_template('start.html')
 
