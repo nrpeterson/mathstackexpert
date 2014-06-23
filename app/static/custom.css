@@ -24,6 +24,31 @@ body {
     background: white;
 }
 
+header.question-title
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #eeeeee;
+    border: 1px solid #aaaaaa;
+    margin-top: 10px;
+}
+
+header.question-title:hover
+{
+    background-color: #428bca;
+    color: white;
+    border: 1px solid #000099;
+}
+
+div.question-body
+{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+}
+
 #catlist
 {
     padding: 0;

@@ -50,7 +50,7 @@
         </div>
     </div>
 </div>
-<div id="questions" style="opacity: .5; z-index: 0;" class="container">
+<div id="questions" style="opacity: .5; z-index: 2;" class="container">
 </div>
 {% endblock %}
 
@@ -101,13 +101,19 @@ function fetchQuestions() {
         qs.exit().remove();
         
         articles = qs.enter().append('article')
+            .attr('id', function(d) {return d.id;})
         headers = articles.append('header')
-            .attr('class', 'container');
-        headers.append('h3')
-                .append('a')
-                .attr('href', function(d) {return d.link;})
-                .html(function(d) {return d.title;});
-        articles.append('div').attr('class', 'container')
+            .attr('class', 'container question-title');
+        headers.attr('data-toggle', 'collapse')
+            .attr('data-target', function(d) {
+                return '#' + d.id.toString() + '-body';
+            })
+            .append('h3')
+            .html(function(d) {return d.title;})
+        articles.append('div').attr('id', function(d) {
+                return d.id.toString() + '-body';
+            })
+            .attr('class', 'container question-body collapse')
             .html(function(d) { return d.body_html; });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         articles.selectAll('img').style('max-width', '80%');
