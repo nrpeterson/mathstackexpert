@@ -133,7 +133,7 @@ def process_api_questions(items, check_quality=True):
         quals = []
         bodies = [item['body_html'] for item in cur]
         
-        with open('homework.pickle', 'rb') as f:
+        with open('psq.pickle', 'rb') as f:
             clf = pickle.load(f)
         probs = clf.predict_proba(bodies)[:, 0]
         for i in range(len(qids)):
