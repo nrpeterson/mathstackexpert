@@ -45,8 +45,9 @@ def api_questions():
         
     if not any(session['cats'][cat]==1 for cat in session['cats']):
         query = """
-SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, Q.title,
-Q.quality_score, GROUP_CONCAT(DISTINCT C.name) AS categories
+SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, 
+Q.title, Q.author_id, Q.quality_score, 
+GROUP_CONCAT(DISTINCT C.name) AS categories
 FROM questions AS Q
 JOIN question_tags AS QT ON QT.question_id = Q.id
 JOIN tag_categories AS TC ON TC.tag_id = QT.tag_id

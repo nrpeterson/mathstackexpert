@@ -11,18 +11,17 @@
     <header>
         <h2>Question Settings</h2>
     </header>
-    <button class="btn btn-primary" onclick="toQuestionsPage()">I'm good!  Take me to the questions.</button>
         <h3 class="text-primary">How much effort do you want to see in questions?</h3>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <form role="form" id="qualityForm">
                     <div class="form-group" style="margin-top: 40px; margin-bottom: 40px; border: 2px solid #bbbbbb; padding: 30px; border-radius: 5px 5px 5px 5px;"><input type="range" min="0" max="100" value="50" name="quality" onchange='fetchQuestions()'>
-                        <div class="pull-left">Show All Questions</div><div class="pull-right">High-effort Only</div>
+                        <div class="pull-left">Show All Questions</div><div class="pull-right">Show High-Effort Only</div>
                     </div>
                 </form>
             </div>
         </div>
-        <h3 class="text-primary">What are your favorite areas of mathematics?</h3>
+        <h3 class="text-primary">What are your favorite areas of mathematics?</h3><h4>We'll only show you questions matching at least one of your selections. Clear the selection to see all topics!</h4>
         <div class="row">
             <div class="col-md-2"><select id="catselect" onchange="addCategory()" class="form-control btn btn-primary">
                     <option selected="selected" disabled="disabled" value="none">Select a category...</option>
@@ -34,10 +33,13 @@
             <div id="selectedcats" class="col-md-10">
             </div>
         </div>
+        <div class="row" style="margin-top: 60px;">
+            <div class="col-md-6 col-md-offset-3"><button class="btn btn-primary form-control" onclick="toQuestionsPage()">I'm good!  Take me to the questions.</button></div>
+        </div>
     </div>
 </div>
 
-<div id="questions" style="opacity: .5; z-index: 2;" class="container">
+<div id="questions" style="opacity: .25; z-index: 2;" class="container">
 </div>
 {% endblock %}
 
@@ -128,26 +130,48 @@ function fetchQuestions() {
             .append('span')
             .attr('class', 'pull-right glyphicon glyphicon-chevron-down')
             .style('font-size', '60%');
-        articles.append('div').attr('id', function(d) {
+        fullart = articles.append('div').attr('id', function(d) {
                 return 'body'+d.id.toString();
             })
             .attr('class', 'container question-body')
             .style('display', 'none')
             .html(function(d) { return d.body_html; });
+        fullart.append('div')
+            .append('span')
+            .attr('class', 'pull-right text-muted')
+            .text(function(d) {return "Created: " + d.creation_date;});
+        fullart.append('div').attr('class', 'clearfix');
+        fullart.append('div')
+            .append('span')
+            .attr('class', 'pull-right text-muted')
+            .text(function(d) {return "Last activity: " + d.last_activity_date;});
+        fullart.append('div').attr('class', 'clearfix');
+        fullart.append('div')
+            .append('span')
+            .attr('class', 'pull-right')
+            .append('img')
+            .attr('src', function(d) { return "http://math.stackexchange.com/users/flair/" + d.author_id + ".png";});
+        fullart.append('div')
+            .style('margin-top', '20px')
+            .append('span')
+            .append('a')
+            .attr('class', 'btn btn-primary')
+            .attr('href', function(d) {return d.link;})
+            .text("Answer this question at Math.StackExchange");
         headers.on("click", function(d) {
             story = d3.select("#body" + d.id.toString());
             if (story.style('display') == 'none') {
                 story.transition().style('display', 'block');
-                d3.select(this).select('span')
+                d3.select(this).select('.glyphicon')
                     .attr('class', 'pull-right glyphicon glyphicon-chevron-up');
             } else {
                 story.transition().style('display', 'none');
-                d3.select(this).select('span')
+                d3.select(this).select('.glyphicon')
                     .attr('class', 'pull-right glyphicon glyphicon-chevron-down');
             }
         });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-        articles.selectAll('img').style('max-width', '80%');
+        d3.selectAll('article p img').style('max-width', '80%');
     });
 }
 
@@ -164,6 +188,7 @@ function toQuestionsPage() {
     settingsPage.style("opacity", 0).style("z-index", 1);
     questionsPage.style("opacity", 1).style("z-index", 2);
     settingsButton.style("opacity", 1);
+    window.scrollTo(0,0);
 }
 </script>
 {% endblock %}
