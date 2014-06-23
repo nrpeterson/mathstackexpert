@@ -2,7 +2,7 @@ body {
     padding-top:50px;
 }
 
-#quality, #categories {
+#quality, #categories, #settings {
     position: absolute;
     top: 80px;
     padding: 20px;
@@ -17,11 +17,31 @@ body {
 
 #questions {
     position: absolute;
-    top: 70px;
+    top: 50px;
     padding-top: 20px;
     left: 0px;
     right: 0px;
     background: white;
+}
+
+button.selected-cat
+{
+    margin-right: 5px;
+}
+
+button.selected-cat span
+{
+    opacity: 0;
+}
+
+button.selected-cat:hover
+{
+    background-color: red;
+}
+
+button.selected-cat:hover span
+{
+    opacity: 1;
 }
 
 header.question-title
@@ -47,6 +67,7 @@ div.question-body
     border-left: 1px solid #aaaaaa;
     border-right: 1px solid #aaaaaa;
     border-bottom: 1px solid #aaaaaa;
+    height: 100%;
 }
 
 #catlist

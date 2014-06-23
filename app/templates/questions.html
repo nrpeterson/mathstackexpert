@@ -7,15 +7,11 @@
 {% endblock %}
 
 {% block content %}
-<div id="quality" class="container" style="opacity: 1; z-index: 3;">
+<div id="settings" class="container" style="opacity: 1; z-index: 10;">
     <header>
-        <h3>Question 1:</h3>
-        <h2 class="text-primary">How much effort do you want to see in questions?</h2>
+        <h2>Question Settings</h2>
     </header>
-    <div class="container">
-        <h4>Maybe you'll answer any question you run across; maybe you really want to see the asker's thought process and analysis.</h4>
-        <h4 class="text-primary">It's up to you!</h4>
-        <p> (And don't worry - you can change your mind later!)</p>
+        <h3 class="text-primary">How much effort do you want to see in questions?</h3>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <form role="form" id="qualityForm">
@@ -25,31 +21,21 @@
                 </form>
             </div>
         </div>
+        <h3 class="text-primary">What are your favorite areas of mathematics?</h3>
         <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4 text-right"><button class="btn btn-primary" onclick="toCategoriesPage()">Next: Choose Categories <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+            <div class="col-md-2"><select id="catselect" onchange="addCategory()">
+                    <option selected="selected" disabled="disabled" value="none">Select a category...</option>
+                    {% for cat in categories %}
+                    <option id="opt-{{cat['name']}}" value='{{cat['name']}}'>{{cat['name']}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="selectedcats" class="col-md-10">
+            </div>
         </div>
     </div>
 </div>
 
-<div id="categories" style="opacity: 0; z-index: 1;" class="container">
-    <header>
-        <h3>Question 2:</h3>
-        <h2 class="text-primary">What are your favorite areas of mathematics?</h2>
-    </header>
-    <div class="container">
-        <h4>We've grouped question tags based on the way they're used on Math.StackExchange. This way, you can select general categories of questions you like, without fussing around with 1000+ tags.</h4>
-        <form role="form" id="categoryForm">
-        <ul id="catlist" class="clearfix">
-        </ul>
-        </form> 
-        <div class="row">
-            <div class="col-md-4"><button class="btn btn-primary" onclick="toQualityPage()"><span class="glyphicon glyphicon-chevron-left"></span> Wait! I changed my mind!</button></div>
-            <div class="col-md-4"></div>
-            <div class="col-md-4 text-right"><button class="btn btn-primary" onclick="toQuestionsPage()">That's it!  Check out your questions <span class="glyphicon glyphicon-chevron-right"></span></button></div>
-        </div>
-    </div>
-</div>
 <div id="questions" style="opacity: .5; z-index: 2;" class="container">
 </div>
 {% endblock %}
@@ -57,41 +43,80 @@
 {% block scripts %}
 <script src="{{url_for('static', filename='vendor/d3/d3.min.js')}}"></script>
 <script>
-var qualityPage = d3.select("#quality");
-var categoriesPage = d3.select("#categories");
+var settingsPage = d3.select("#settings");
 var questionsPage = d3.select("#questions");
 var settingsButton = d3.select("#settings-button");
-var catvals = {}
-var categoryList = []
-function fetchCategoryList() {
-    d3.json('{{url_for('api_categories')}}', function(error, json) {
-        if (error) return console.warn(error);
-        categoryList = json;
-        for (cat in json) {
-            catvals[cat] = 0;
+var selectedCategories = [];
+var unselectedCategories = ['{{categories|join("','", 'name')|safe}}'];
+function addCategory() {
+    catselect = d3.select("#catselect")
+    cat = catselect.property('value')
+    if (cat != 'none') {
+        console.log(unselectedCategories)
+        selectedCategories.push(cat);
+        for (i=0; i < unselectedCategories.length; i++) {
+            if (unselectedCategories[i] == cat) {
+                unselectedCategories.splice(i, 1);
+                break;
+            }
         }
-        cats = categoriesPage.select('ul').selectAll('li').data(json)
-        cats.exit().remove();
-
-        items = cats.enter().append('li').attr('class', 'form-group')
-        items.append('input').attr('type','checkbox')
-            .attr('name', 'category')
-            .attr('value', function(d) {return d;})
-            .attr('onchange', 'fetchQuestions()');
-        items.append('label').text(function(d) {return d;});
-    });  
+        console.log(unselectedCategories)
+        updateCategories();
+    }
 }
+
+function removeCategory(cat) {
+    for (i=0; i < selectedCategories.length; i++) {
+        if (selectedCategories[i] == cat) {
+            selectedCategories.splice(i, 1);
+            break;
+        }
+    }
+    console.log(unselectedCategories);
+    console.log("Adding new element " + cat)
+    unselectedCategories.push(cat);
+    console.log(unselectedCategories)
+    unselectedCategories.sort();
+    console.log("Sorted:");
+    console.log(unselectedCategories)
+    updateCategories()
+}
+
+function updateCategories() {
+    sel = d3.select("#selectedcats").selectAll('button').data(selectedCategories, function(d, i) {return d});
+        
+    sel.enter().append('button')
+        .attr('class', 'btn btn-primary selected-cat')
+        .attr('id', function(d) {return d;})
+        .text(function(d) {return d;})
+        .on("click", function(d) {removeCategory(d); }) 
+        .append('span')
+        .html(' &times;');
+    sel.exit().remove();
+
+    console.log(unselectedCategories);
+    unselectedCategories.sort();
+    console.log(unselectedCategories);
+    d3.select("#catselect").selectAll('option').remove()
+    catsel = d3.select("#catselect").selectAll('option').data(unselectedCategories);
+    catsel.enter().append('option')
+        .attr('id', function(d) { return d; })
+        .attr('value', function(d) { return d; })
+        .text(function(d) { return d; });
+    d3.select("#catselect").insert('option', ':first-child')
+        .attr('id', 'none')
+        .attr('value', 'none')
+        .attr('disabled', 'disabled')
+        .attr('selected', 'selected')
+        .text("Select a category...");
+    fetchQuestions();
+}
+
 function fetchQuestions() {
     params = {};
     params['quality'] = parseInt(document.forms['qualityForm']['quality'].value);
-    catboxes = document.getElementsByName('category');
-    for (i=0; i < catboxes.length; i++) {
-        if (catboxes[i].checked == true) {
-            params[catboxes[i]['value']] = 1;
-        }
-        else {
-            params[catboxes[i]['value']] = 0;
-        }
+    for (i=0; i<selectedCategories.length; i++) {
+        params[selectedCategories[i]] = 1;
     }
     querystr = $.param(params);
     url = '{{url_for('api_questions')}}?' + querystr;
@@ -99,29 +124,34 @@ function fetchQuestions() {
         if (error) return console.warn(error);
         qs = questionsPage.selectAll('article').data(json, function(d,i) {return [d.id,i];});
         qs.exit().remove();
-        
+         
         articles = qs.enter().append('article')
+            .style('position', 'relative')
+            .style('right', '0px')
             .attr('id', function(d) {return d.id;})
         headers = articles.append('header')
             .attr('class', 'container question-title');
-        headers.attr('data-toggle', 'collapse')
-            .attr('data-target', function(d) {
-                return '#' + d.id.toString() + '-body';
-            })
-            .append('h3')
+        headers.append('h3')
             .html(function(d) {return d.title;})
         articles.append('div').attr('id', function(d) {
-                return d.id.toString() + '-body';
+                return 'body'+d.id.toString();
             })
-            .attr('class', 'container question-body collapse')
+            .attr('class', 'container question-body')
+            .style('display', 'none')
             .html(function(d) { return d.body_html; });
+        headers.on("click", function(d) {
+            story = d3.select("#body" + d.id.toString());
+            if (story.style('display') == 'none') {
+                story.transition().style('display', 'block');
+            } else {
+                story.transition().style('display', 'none');
+            }
+        });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         articles.selectAll('img').style('max-width', '80%');
     });
 }
 
-
-fetchCategoryList();
 fetchQuestions();
 
 function toQualityPage() {

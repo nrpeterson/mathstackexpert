@@ -12,7 +12,11 @@ def start():
 
 @app.route('/questions/')
 def questions():
-    return render_template('questions.html')
+    con = get_db()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM categories ORDER BY name  ASC;")
+    categories = cur.fetchall()
+    return render_template('questions.html', categories=categories)
 
 @app.route('/api/categories/')
 def api_categories():
@@ -26,8 +30,7 @@ def api_categories():
 def api_questions():
     con = get_db()
     cur = con.cursor()
-    if 'cats' not in session:
-        session['cats'] = dict()
+    session['cats'] = dict()
     for k,v in request.args.items():
         if k == 'quality':
             session['quality'] = int(v)
