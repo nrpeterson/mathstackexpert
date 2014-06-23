@@ -61,10 +61,14 @@
     </section>
     <section class="" data-id="87eda959e992d021f25b4544945f8866">
         <h2>The problem</h2>
-<div>I spend lots of time on Math.StackExchange.</div>
 <div>
 <img src="http://math.stackexchange.com/users/flair/81839.png?theme=clean" style="width: 281.72912373924214px; height: 78.54625741065112px; max-height: none; max-width: none;">
+        <br>
 </div>
+<div>I spend lots of time on Math.StackExchange.</div>
+<div>
+        <br>
+    </div>
 <div>(I know what you're thinking... but that's NOT the problem.)</div>
 <div>
     <br>
@@ -129,28 +133,44 @@
 </div>
 </section>
 <section class="" data-id="e9335fddaa8e343c0cc10dddf81772e3">
-    <h2>Methods/Analysis</h2>
+    <h2>Methods</h2>
 <h3 style="text-align: left; ">Predictor:</h3>
 <div>
     <ul>
 <li>Used 4916 questions, half closed.</li>
-<li>Tuned parameters with cross-validation (optimized for recall)</li>
+<li>Trained logistic regression model on body text (TFIDF)</li>
+<li>Tuned parameters with cross-validation, optimized for recall</li>
 <li>Held back 20% as test set:</li>
 <ul>
 <li>Accuracy: 85.66%</li>
 <li>Recall: 87.47%</li>
-<li>Precision: 84.57%<br>
-    <br>
+<li>Precision: 84.57%
 </li>
 </ul>
 </ul>
 </div>
-<h3 style="text-align: left; ">Clustering:</h3>
+<h3 style="text-align: left; ">
+</h3>
 <div>
 <ul>
-<li>Used sklearn AffinityPropogation algorithm</li>
-<li>Fed in similarity matrix built from co-occurrence data</li>
 </ul>
+</div>
+</section>
+<section class="" data-id="443703ea8eb6c0b2861c39d6f5186ceb">
+    <h2>Methods</h2>
+<div>
+    <br>
+</div>
+<div>
+<h3 style="font-style: normal; font-variant: normal; text-align: left;">CLUSTERING:</h3>
+<div style="font-size: 35.96491241455078px; font-style: normal; font-variant: normal;">
+<ul>
+<li>Used sklearn AffinityPropogation algorithm</li>
+<li>Fed in similarity matrix built from co-occurrence data<br></li>
+<li>Manually removed some "odd" tags (e.g. mathematical-software) that did not cluster well</li>
+<li>Result is 28 "categories" of tags, which represent different broad areas, and a chosen cluster center that exemplifies the category.
+</ul>
+</div>
 </div>
 </section>
 <section class="" data-id="626e3d2ca792200a616f68610530cde3">

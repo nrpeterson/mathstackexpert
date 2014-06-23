@@ -2,7 +2,7 @@ body {
     padding-top:50px;
 }
 
-#quality, #categories, #settings {
+#settings {
     position: absolute;
     top: 80px;
     padding: 20px;
@@ -27,6 +27,7 @@ body {
 button.selected-cat
 {
     margin-right: 5px;
+    margin-bottom: 5px;
 }
 
 button.selected-cat span
@@ -48,7 +49,7 @@ header.question-title
 {
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: #eeeeee;
+    background-color: #f8f8f8;
     border: 1px solid #aaaaaa;
     margin-top: 10px;
 }
