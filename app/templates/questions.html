@@ -148,6 +148,11 @@ function fetchQuestions() {
         fullart.append('div').attr('class', 'clearfix');
         fullart.append('div')
             .append('span')
+            .attr('class', 'pull-right text-muted')
+            .text(function(d) {return "Quality Score: " + d.quality_score;});
+        fullart.append('div').attr('class', 'clearfix');
+        fullart.append('div')
+            .append('span')
             .attr('class', 'pull-right')
             .append('img')
             .attr('src', function(d) { return "http://math.stackexchange.com/users/flair/" + d.author_id + ".png";});
