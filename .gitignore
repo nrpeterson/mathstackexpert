@@ -1,6 +1,11 @@
 __pychache__/
 *.py[cod]
 
+.ipynb_checkpoints/
+*.ipynb
+
+*.swp
+
 .Python
 env/
 build/
