@@ -2,7 +2,6 @@ import json
 import pickle
 from flask import render_template, request, session, Response
 from app import app, get_db
-from app.models.questions import build_interest_classifier
 from app.api import mse_api_call
 
 @app.route('/')

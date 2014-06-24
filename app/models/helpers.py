@@ -4,6 +4,9 @@ import re
 
 def preprocess_post(text):
     # Strip out HTML
+    result = BeautifulSoup(text).get_text()
+    result = result.lower()
+    result = ''.join(c for c in result if not c.isdigit())
     return BeautifulSoup(text).get_text()
 
 def is_psq(quest):

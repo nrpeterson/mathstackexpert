@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.pipeline import Pipeline
 from app import connect_db
 from app.models.helpers import preprocess_post
@@ -90,7 +90,7 @@ def build_psq_classifier(end_date_str=None):
         ]
 
 
-    gridsearch = GridSearchCV(clf, params, scoring='recall', n_jobs=4)
+    gridsearch = GridSearchCV(clf, params, scoring='f1', n_jobs=4, pre_dispatch=8)
 
     gridsearch.fit(X_train, Y_train)
     clf = gridsearch.best_estimator_
