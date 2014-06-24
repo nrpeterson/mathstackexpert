@@ -156,7 +156,7 @@ function fetchQuestions() {
             .append('span')
             .append('a')
             .attr('class', 'btn btn-primary')
-            .attr('href', function(d) {return d.link;})
+            .attr('href', function(d) {return d.link + "#post-editor";})
             .text("Answer this question at Math.StackExchange");
         headers.on("click", function(d) {
             story = d3.select("#body" + d.id.toString());
