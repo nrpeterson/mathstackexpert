@@ -43,6 +43,10 @@ body {
     background: white;
 }
 
+#catselect {
+    margin-bottom: 5px;
+}
+
 button.selected-cat
 {
     margin-right: 5px;
