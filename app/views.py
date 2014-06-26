@@ -64,7 +64,7 @@ LIMIT 30;"""
 SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, 
 Q.title, Q.quality_score, Q.author_id, 
 GROUP_CONCAT(DISTINCT C.name ORDER BY C.name) AS categories,
-GROUP_CONCAT(DISTINCT IF(C.name in ({}), C.name, NULL) AS n ORDER BY n) AS chosen_categories
+GROUP_CONCAT(DISTINCT IF(C.name in ({}), C.name, NULL) ORDER BY C.name) AS chosen_categories
 FROM categories AS C
 JOIN tag_categories AS TC ON C.id=TC.category_id
 JOIN question_tags AS QT ON QT.tag_id=TC.tag_id
