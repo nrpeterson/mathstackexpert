@@ -45,7 +45,7 @@ def api_questions():
     if not any(session['cats'][cat]==1 for cat in session['cats']):
         query = """
 SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, 
-Q.title, Q.author_id, Q.quality_score, 
+Q.title, Q.author_id, Q.quality_score, '' AS chosen_categories, 
 GROUP_CONCAT(DISTINCT C.name) AS categories
 FROM questions AS Q
 JOIN question_tags AS QT ON QT.question_id = Q.id
@@ -62,16 +62,17 @@ LIMIT 30;"""
                 session['cats'][cat] == 1)
         query = """
 SELECT Q.id, Q.body_html, Q.creation_date, Q.last_activity_date, Q.link, 
-Q.title, Q.quality_score, Q.author_id, GROUP_CONCAT(DISTINCT C.name) 
-AS categories
+Q.title, Q.quality_score, Q.author_id, 
+GROUP_CONCAT(DISTINCT C.name) AS categories,
+GROUP_CONCAT(DISTINCT IF(C.name in ({}), C.name, NULL)) AS chosen_categories
 FROM categories AS C
 JOIN tag_categories AS TC ON C.id=TC.category_id
 JOIN question_tags AS QT ON QT.tag_id=TC.tag_id
 JOIN questions AS Q ON Q.id=QT.question_id
-WHERE C.name IN ({})
-AND Q.quality_score >= %s
+WHERE Q.quality_score >= %s
 AND Q.accepted_answer_id IS NULL
 GROUP BY Q.id
+HAVING CHAR_LENGTH(chosen_categories) > 0
 ORDER BY last_activity_date DESC
 LIMIT 30
 """.format(catlist)

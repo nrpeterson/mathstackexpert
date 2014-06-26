@@ -84,6 +84,16 @@ header.question-title:hover
     border: 1px solid #000099;
 }
 
+.question-title:hover .qcatlist .label-default {
+    background-color: #ffffff;
+    color: #999999;
+}
+
+.question-title:hover .qcatlist .label-primary {
+    background-color: #ffffff;
+    color: #428bca;
+}
+
 div.question-body
 {
     padding-top: 20px;

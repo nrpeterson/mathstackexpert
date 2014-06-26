@@ -118,18 +118,48 @@ function fetchQuestions() {
         if (error) return console.warn(error);
         qs = questionsPage.selectAll('article').data(json, function(d,i) {return [d.id,i];});
         qs.exit().remove();
-         
+        qs.select('.qcatlist')
+            .html(function(d) {
+                console.log("UPDATING " + d.title)
+                console.log(d)
+                result = '';
+                for (i=0; i<cats.length; i++) {
+                    if (selectedCategories.indexOf(cats[i]) >= 0) {
+                            result += '<span class="label label-primary">' + cats[i] + '</span> ';
+                    } else {
+                        result += '<span class="label label-default">' + cats[i] + '</span> ';
+                    }
+                }  
+                return result;
+            });
         articles = qs.enter().append('article')
             .style('position', 'relative')
             .style('right', '0px')
             .attr('id', function(d) {return d.id;})
         headers = articles.append('header')
             .attr('class', 'container question-title');
-        headers.append('h3')
+        headers.append('h4')
             .html(function(d) {return d.title;})
             .append('span')
             .attr('class', 'pull-right glyphicon glyphicon-chevron-down')
             .style('font-size', '60%');
+        headers.append('div')
+            .attr('class', 'qcatlist')
+            .html(function(d) {
+                console.log(d.categories)
+                cats = d.categories.split(',');
+                console.log(d.categories)
+                result = '';
+                for (i=0; i<cats.length; i++) {
+                    if (selectedCategories.indexOf(cats[i]) >= 0) {
+                            result += '<span class="label label-primary">' + cats[i] + '</span> ';
+                    } else {
+                        result += '<span class="label label-default">' + cats[i] + '</span> ';
+                    }
+                }  
+                return result;
+            });
+        
         fullart = articles.append('div').attr('id', function(d) {
                 return 'body'+d.id.toString();
             })
