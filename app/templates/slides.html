@@ -137,12 +137,13 @@
 </section>
 <section class="" data-id="e9335fddaa8e343c0cc10dddf81772e3">
     <h2>Methods</h2>
-<h3 style="text-align: left; ">Predictor:</h3>
+<h3 style="text-align: left; ">Effort Classifier</h3>
 <div>
     <ul>
+        <li>Ground truth: community votes to close questions considered low-effort.</li>
 <li>Used 5110 questions, half closed.</li>
 <li>Trained logistic regression model on body text (TFIDF)</li>
-<li>Tuned parameters with cross-validation, trying to optimize F1-score</li>
+<li>Tuned parameters with cross-validation to optimize F1-score</li>
 <li>Held back 20% as test set:</li>
 <ul>
 <li>Accuracy: 85.32%</li>
