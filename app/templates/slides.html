@@ -65,11 +65,13 @@
     </section>
     <section class="" data-id="87eda959e992d021f25b4544945f8866">
         <h2>The problem</h2>
+        <div><br></div>
+        <div>I spend lots of time on Math.StackExchange:</div>
+        <div><br></div>
 <div>
 <img src="http://math.stackexchange.com/users/flair/81839.png?theme=clean" style="width: 281.72912373924214px; height: 78.54625741065112px; max-height: none; max-width: none;">
         <br>
 </div>
-<div>I spend lots of time on Math.StackExchange.</div>
 <div>
         <br>
     </div>
@@ -77,21 +79,11 @@
 <div>
     <br>
 </div>
-<div>Unlike most, I'm there to ANSWER questions.</div>
-<div>
-<br>
-</div>
-<div>There are two things that make this tough.</div>
 </section>
 <section class="" data-id="8748f07f260cf03b0af9c46c461e7023">
     <h2>1. Low-effort questions</h2>
 <div>
 <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481540/Screenshot_from_2014-06-20_09_22_10.png" style="width: 718.7586901286306px; height: 199.69572553232956px; max-height: none; max-width: none;">
-    <br>
-</div>
-<div>vs</div>
-<div>
-<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/nicholaspeterson/images/481553/Screenshot_from_2014-06-20_09_30_00.png" style="width: 716.1852545694582px; height: 227.82908006939152px; max-height: none; max-width: none;">
     <br>
 </div>
 </section>
@@ -115,26 +107,12 @@
 <div>(It is graph theory, but not combinatorics?)</div>
 </section>
 <section class="" data-id="d707db228c2f01475fe3029830338322">
-    <h2>My solution</h2>
+    <h2>My Solution</h2>
 <div>
     <br>
 </div>
-<h1>Math.stack<font color="#0000ff">expert</font>
+<h1><a href="/"><font color="#ffffff">Math.stack</font><font color="#0000ff">expert</font></a>
 </h1>
-<div>
-<ul>
-<li>
-<font color="#ffffff">Clustered tags into manageable 'categories' representing broad areas of mathematics<br>
-    <br>
-</font>
-</li>
-<li>
-<font color="#ffffff">
-    <span>Used voting data and question text to build a predictor (logistic regression model) for whether or not a question will be closed for lack of effort.</span>
-</font>
-</li>
-</ul>
-</div>
 </section>
 <section class="" data-id="443703ea8eb6c0b2861c39d6f5186ceb">
     <h2>Methods</h2>
@@ -145,7 +123,13 @@
 <h3 style="font-style: normal; font-variant: normal; text-align: left;">CLUSTERING:</h3>
 <div style="font-size: 35.96491241455078px; font-style: normal; font-variant: normal;">
 <ul>
-<li>Used sklearn AffinityPropogation algorithm</li>
+<li>
+<font color="#ffffff">Clustered tags into 28 manageable 'categories' representing broad areas of mathematics:<br>
+    <p><small>abstract-algebra, algebra-precalculus, algebraic-geometry, algebraic-topology, algorithms, calculus, category-theory, combinatorics, complex-analysis, differential-geometry, dynamical-systems, elementary-set-theory, formal-languages, fourier-analysis, functional-analysis, game-theory, general-topology, geometry, interpolation, lie-algebras, linear-algebra, logic, number-theory, optimization, probability, real-analysis, set-theory, stochastic-processes</small></p>
+    <br>
+</font>
+</li>
+<li>Used sklearn AffinityPropogation algorithm<br><br></li>
 <li>Fed in similarity matrix built from co-occurrence data</li>
 </ul>
 </div>
@@ -156,14 +140,14 @@
 <h3 style="text-align: left; ">Predictor:</h3>
 <div>
     <ul>
-<li>Used 4916 questions, half closed.</li>
+<li>Used 5110 questions, half closed.</li>
 <li>Trained logistic regression model on body text (TFIDF)</li>
-<li>Tuned parameters with cross-validation, optimized for recall</li>
+<li>Tuned parameters with cross-validation, trying to optimize F1-score</li>
 <li>Held back 20% as test set:</li>
 <ul>
-<li>Accuracy: 85.66%</li>
-<li>Recall: 87.47%</li>
-<li>Precision: 84.57%<br>
+<li>Accuracy: 85.32%</li>
+<li>Recall: 87.10%</li>
+<li>Precision: 83.78%<br>
     <br>
 </li>
 </ul>
