@@ -8,6 +8,20 @@ body {
     margin-bottom: 60px;
 }
 
+dl.horizontal dt {
+    width: 90px;
+    float: left;
+    font-weight: normal;
+}
+
+dl.horizontal dt:after {
+    content: ':';
+}
+
+dl.horizontal dd {
+    margin-left: 100px;
+}
+
 #footer {
     position: absolute;
     bottom: 0;

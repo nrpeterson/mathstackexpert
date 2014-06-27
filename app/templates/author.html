@@ -1,10 +1,42 @@
 {% extends 'layout/base.html' %}
 {% block content %}
 
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <img class="img-rounded" src="{{url_for('static', filename='me.jpg')}}" style="width: 200px;">
+            </div>
+            <div class="col-md-9">
+
+                <h1><span class="text-primary">Nicholas R. Peterson</span></h1>
+        <h4>Fellow, Insight Data Science; Mathematics PhD, The Ohio State University</h4>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
-    <header class="page-header">
-    <h1> <small>About the author:</small> Nicholas R. Peterson</h1>
-    </header>
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="text-primary">About Me</h3>
+            <p>My name is Nick, and I'm the creator of <a href="{{url_for('start')}}">Math.StackExpert</a>. This site is my project for <a href="http://www.insightdatascience.com">Insight Data Science</a>, a six-week fellowship program in Palo Alto, CA that trains academics for careers as data scientists in the tech industry.</p>
+            <p>Before coming to Insight, I earned my PhD in Mathematics (and, briefly, was a postdoctoral lecturer) in the Mathematics department at The Ohio State University; my specialty was random graphs, the study of probability distributions on spaces of discrete structures. I am originally from Bloomington, MN.</p>
+        </div>
+        <div class="col-md-6">
+            <h3 class="text-primary">Contact Information/Profiles</h3>
+            <p>Want more information?</p>
+            <dl class="horizontal">
+                <dt>Email</dt> 
+                <dd><a href="mailto:nrpeterson@gmail.com">nrpeterson@gmail.com</a></dd>
+                <dt>Homepage</dt>
+                <dd><a href="http://nrpeterson.info">nrpeterson.info</a></dd>
+                <dt>Github</dt>
+                <dd><a href="http://www.github.com/nrpeterson">github.com/nrpeterson</a></dd>
+                <dt>LinkedIn</dt>
+                <dd><a href="http://linkedin.com/in/nrpeterson">linkedin.com/in/nrpeterson</a></dd>
+            </dl>
+        </div>
+    </div>
 </div>
 
 <div id="footer">
