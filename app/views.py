@@ -17,6 +17,10 @@ def questions():
     categories = cur.fetchall()
     return render_template('questions.html', categories=categories)
 
+@app.route('/author/')
+def author():
+    return render_template('author.html')
+
 @app.route('/api/categories/')
 def api_categories():
     con = get_db()

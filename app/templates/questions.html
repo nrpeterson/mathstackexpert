@@ -120,6 +120,7 @@ function fetchQuestions() {
         qs.exit().remove();
         qs.select('.qcatlist')
             .html(function(d) {
+                cats = d.categories.split(',');
                 console.log("UPDATING " + d.title)
                 console.log(d)
                 result = '';
@@ -146,9 +147,7 @@ function fetchQuestions() {
         headers.append('div')
             .attr('class', 'qcatlist')
             .html(function(d) {
-                console.log(d.categories)
                 cats = d.categories.split(',');
-                console.log(d.categories)
                 result = '';
                 for (i=0; i<cats.length; i++) {
                     if (selectedCategories.indexOf(cats[i]) >= 0) {
