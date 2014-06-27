@@ -243,7 +243,7 @@ def fetch_recent_questions():
             'page': 1,
             'pagesize': 100,
             'order': 'desc',
-            'fromdate': int(mktime((ts - timedelta(seconds=60)).timetuple())),
+            'fromdate': int(mktime((ts - timedelta(hours=1)).timetuple())),
             'sort': 'activity',
             'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }
