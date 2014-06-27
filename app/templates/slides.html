@@ -123,14 +123,18 @@
 <h3 style="font-style: normal; font-variant: normal; text-align: left;">CLUSTERING:</h3>
 <div style="font-size: 35.96491241455078px; font-style: normal; font-variant: normal;">
 <ul>
+    <li>Built similarity matrix for tags from co-occurrence data:<br><br>
+    $$
+    S_{i,j}=\frac{\text{ # of posts tagged $i$ and $j$}}{\text{ # of posts tagged $i$}}
+    $$<br></li>
+<li>Fed $S$ to scikit-learn AffinityPropogation algorithm<br><br></li>
 <li>
-<font color="#ffffff">Clustered tags into 28 manageable 'categories' representing broad areas of mathematics:<br>
-    <p><small>abstract-algebra, algebra-precalculus, algebraic-geometry, algebraic-topology, algorithms, calculus, category-theory, combinatorics, complex-analysis, differential-geometry, dynamical-systems, elementary-set-theory, formal-languages, fourier-analysis, functional-analysis, game-theory, general-topology, geometry, interpolation, lie-algebras, linear-algebra, logic, number-theory, optimization, probability, real-analysis, set-theory, stochastic-processes</small></p>
+This returned 28 clusters, and an examplar for each, e.g.<br>    
     <br>
+    <p><small><b>algorithms:</b> algorithms, artificial-intelligence, asymptotics, clustering, computational-complexity, computational-mathematics, computer-science, data-analysis, data-mining, dynamic-programming, grammar-generalization, magic-square, network-flow, np-complete, parsing, planar-graph, recursion, recursive-algorithms, scoring-algorithm, searching, sorting, spoj, supervised-learning </small></p>
+    
 </font>
 </li>
-<li>Used sklearn AffinityPropogation algorithm<br><br></li>
-<li>Fed in similarity matrix built from co-occurrence data</li>
 </ul>
 </div>
 </div>
@@ -143,7 +147,7 @@
         <li>Ground truth: community votes to close low-effort questions.</li>
 <li>Used 5110 questions, half closed.</li>
 <li>Trained logistic regression model on body text (TFIDF)</li>
-<li>Tuned parameters with cross-validation to optimize F1-score</li>
+<li>Tuned parameters with cross-validation for $F_1$-score (288 combinations of parameters: ngram range for tokenizer, and regularization, intercept scaling, and penalty norm for classifier)</li>
 <li>Held back 20% as test set:</li>
 <ul>
 <li>Accuracy: 85.32%</li>
@@ -164,32 +168,19 @@
 </section>
 <section class="" data-id="f4b7f18c73d13471da0dd4a14ee47457">
     <h3>Can we learn anything from the effort model?</h3>
-    <div style="text-align: left; ">What words are signals for low/high effort?&nbsp;</div>
+    <div style="text-align: left; ">How can you improve your questions?</div>
     <div style="text-align: left; ">
         <br>
     </div>
-    <div style="text-align: left; ">Some of the strongest:</div>
-    <div style="text-align: left; ">
-        <br>
+    <div style="text-align: left; "><b>Don't just state the overall question -- explain your thoughts!</b><ul>
+            <li>Words found in homework statements (show, prove, solve, provide...) are negatively correlated with quality in our model.<br><br></li>
+            <li>But, they are overpowered by the positive correlation of explanatory/discussion terms: references, generalization, intuition, interesting...</li>
+        </ul><br><br>
     </div>
-    <div style="text-align: left; ">Low effort:</div>
-    <div style="text-align: left; ">
-        <b>Commands: </b>show, prove, solve, provide</div>
-        <div style="text-align: left; ">
-            <b>Others: </b>helpless, help, please, Prof</div>
-            <div style="text-align: left; ">
-                <b>Wait... what?</b>: probability</div>
-                <div style="text-align: left; ">
-                    <br>
-                </div>
-                <div style="text-align: left; ">High effort:</div>
-                <div style="text-align: left; ">
-                    <b>Thought:&nbsp;</b>references, notations, generalization, intuition</div>
-                    <div style="text-align: left; ">
-                        <b style="font-size: 35.96491241455078px; font-style: normal; font-variant: normal;">Meta:&nbsp;</b>
-                        <span style="font-size: 35.96491241455078px; font-style: normal; font-variant: normal;">Mathematics, mathematician, Mathematica</span>
-                    </div>
-                </section>
+    <div style="text-align: left;"><b>Stick to the math.</b></ul>
+    <li>Words like 'help', 'helpless', 'please', and 'prof' are negatively correlated with perceived effort in our model.</li></ul></div>
+
+</section>
                 <section class="" data-id="626e3d2ca792200a616f68610530cde3">
                     <h2>I'm <font color="#ffffff">Nicholas Peterson.</font>
 </h2>
@@ -217,6 +208,11 @@
 
                 <script src="{{url_for('static', filename='vendor/reveal.js-2.6.2/lib/js/head.min.js')}}"></script>
                 <script src="{{url_for('static', filename='vendor/reveal.js-2.6.2/js/reveal.min.js')}}"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) }, tex2jax: { inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" }, TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } }, messageStyle: "none"
+});
+</script>        
+
+<script src="http://beta.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>  
 
 		<script>
 

@@ -20,7 +20,8 @@ def create_tag_categories():
         'solution-verification', 'definition', 'examples-counterexamples',
         'mathematica', 'wolfram-alpha', 'maple', 'matlab', 'sage', 'octave',
         'floor-function', 'ceiling-function', 'article-writing', 'publishing',
-        'combinatorial-species', 'gromov-hyperbolic-spaces')
+        'combinatorial-species', 'gromov-hyperbolic-spaces', 'chemistry',
+        'book-recommendation')
         GROUP BY tags.name
     ) AS T
     JOIN question_tags AS Q ON T.id=Q.tag_id
