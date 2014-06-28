@@ -1,19 +1,12 @@
-import logging
 from calendar import timegm as timestamp
 from time import sleep
 from datetime import datetime as dt
 from datetime import timedelta
 from time import mktime
 from app import app, connect_db
-from app.api import mse_api_call, from_timestamp
+from app.api import process_each_page, from_timestamp
 import pickle
 import pymysql
-
-logging.basicConfig(
-        filename='fetch_data.log', 
-        level=logging.INFO,
-        format='%(asctime)s %(message)s'
-)
 
 def process_api_questions(items, check_quality=True):
     """Given items (a group of questions from the StackExchange API JSON), 
@@ -144,90 +137,52 @@ def process_api_questions(items, check_quality=True):
 
     con.close()
 
-def fetch_tags():
-    logging.info('Fetching tags from StackExchange API')
+def insert_tags(items):
+    for item in items:
+        query = "SELECT * FROM tags WHERE name='%s'"
+        if cur.execute(query, [item['name']]) == 0:
+            query = "INSERT INTO tags (name) VALUES ('%s');"
+            cur.execute(query, [item['name']])
+    con.commit()
 
+def fetch_tags():
     con = connect_db()
     cur = con.cursor()
 
     func = "/tags"
     params = {
-        'page': 1,
         'pagesize': 100,
         'order': 'asc',
         'sort': 'name'
     }
-
-    while True:
-        data = mse_api_call(func, params)
-        if 'items' in data:
-            for item in data['items']:
-                query = "SELECT * FROM tags WHERE name=%s"
-                if cur.execute(query, [item['name']]) == 0:
-                    query = "INSERT INTO tags (name) VALUES (%s);"
-                    cur.execute(query, [item['name']])
-            con.commit()
-        logging.info('Processed page {}. Quota remaining: {}'.format(
-            params['page'],
-            data['quota_remaining']
-        ))
-        if data['quota_remaining'] == 0:
-            logging.info("Reached maximum quota. Shutting down.")
-            break
-        if 'backoff' in data:
-            logging.info("Received backoff request for {} seconds.".format(
-                data['backoff']
-            ))
-            sleep(data['backoff'])
-        params['page'] += 1
-        if not data['has_more']:
-            logging.info("Reached end of query!")
-            break
-
-def fetch_questions_and_answers(first_page = 1):
-    logging.info('Fetching data from StackExchange API')
     
+    process_each_page(func, params, insert_tags)
+
+def fetch_questions_and_answers():
     func = "/questions"
     params = {
-        'page': first_page,
         'pagesize': 100,
         'order': 'asc',
         'sort': 'creation',
         'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }
 
-    while True:
-        data = mse_api_call(func, params)
-        if 'items' in data:
-            process_api_questions(data['items'], check_quality=False)
-        logging.info("Processed page {}. Quota remaining: {}".format(
-            params['page'],
-            data['quota_remaining']))
-        if data['quota_remaining'] == 0:
-            logging.info("Reached maximum quota. Shutting down.")
-            break
-        if 'backoff' in data:
-            logging.info("Received backoff request for {} seconds.".format(
-                data['backoff']))
-            sleep(data['backoff'])
-        params['page'] += 1
-        if not data['has_more']:
-            date = dt.now().strftime('%Y-%m-%d %H:%M:%S')
-            logging.info("Reached end of query!")
-            query = "SELECT * FROM last_updated WHERE description='questions';"
-            if cur.execute(query) == 0:
-                query = "INSERT INTO last_updated (description, date) VALUES(%s, %s);"
-                desc = 'questions'
-                cur.execute(query, [desc, date])
-            else:
-                query = "UPDATE last_updated SET date=%s WHERE description='questions';"
-                cur.execute(query, [date])
-            con.commit()
-            break
+    process_each_page(func, params, \
+            lambda x: process_api_questions(x, check_quality=False))
+    
+    date = dt.now().strftime('%Y-%m-%d %H:%M:%S')
+    query = "select * from last_updated where description='questions';"
+    if cur.execute(query) == 0:
+        query = "insert into last_updated (description, date) values(%s, %s);"
+        desc = 'questions'
+        cur.execute(query, [desc, date])
+    else:
+        query = "update last_updated set date=%s where description='questions';"
+        cur.execute(query, [date])
+    con.commit()
+
 
 def fetch_recent_questions():
-    logging.info('Fetching recent questions...')
-    
     con = connect_db()
     cur = con.cursor()
     query = "SELECT * FROM last_updated WHERE description='questions'"
@@ -240,39 +195,23 @@ def fetch_recent_questions():
     
     func = "/questions"
     params = {
-            'page': 1,
             'pagesize': 100,
             'order': 'desc',
             'fromdate': int(mktime((ts - timedelta(hours=1)).timetuple())),
             'sort': 'activity',
             'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }
-    
-    while True:
-        data = mse_api_call(func, params)
-        if 'items' in data:
-            process_api_questions(data['items'])
-        logging.info("Processed page {}. Quota remaining: {}".format(
-            params['page'],
-            data['quota_remaining']))
-        if data['quota_remaining'] == 0:
-            logging.info("Reached maximum quota. Shutting down.")
-            break
-        if 'backoff' in data:
-            logging.info("Received backoff request for {} seconds.".format(
-                data['backoff']))
-            sleep(data['backoff'])
-        params['page'] += 1
-        if not data['has_more']:
-            date = dt.now().strftime('%Y-%m-%d %H:%M:%S')
-            logging.info("Reached end of query!")
-            query = "SELECT * FROM last_updated WHERE description='questions';"
-            if cur.execute(query) == 0:
-                query = "INSERT INTO last_updated (description, date) VALUES(%s, %s);"
-                desc = 'questions'
-                cur.execute(query, [desc, date])
-            else:
-                query = "UPDATE last_updated SET date=%s WHERE description='questions';"
-                cur.execute(query, [date])
-            con.commit()
-            break
+   
+    process_each_page(func, params, process_api_questions)
+
+    date = dt.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(date)
+    query = "select * from last_updated where description='questions';"
+    if cur.execute(query) == 0:
+        query = "insert into last_updated (description, date) values(%s, %s);"
+        desc = 'questions'
+        cur.execute(query, [desc, date])
+    else:
+        query = "update last_updated set date=%s where description='questions';"
+        cur.execute(query, [date])
+    con.commit()

@@ -27,3 +27,23 @@ def mse_api_call(func, params):
     text = gz.read().decode()
     data = json.loads(text)
     return data
+
+def process_each_page(func, params, proc):
+    params['page'] = 1
+    while True:
+        data = mse_api_call(func, params)
+        if 'items' in data:
+            proc(data['items'])
+        
+        if data['quota_remaining'] == 0:
+            logging.info("Reached maximum quota. Shutting down.")
+            break
+        
+        if 'backoff' in data:
+            logging.info("Received backoff request for {} seconds.".format(
+                data['backoff']
+            ))
+            sleep(data['backoff'])
+        params['page'] += 1
+        if not data['has_more']:
+            break
