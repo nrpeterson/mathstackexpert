@@ -1,15 +1,15 @@
 import pickle
-from random import sample, shuffle
 from time import time
 import numpy as np
 from sklearn.grid_search import GridSearchCV
+from sklearn.cross_validation import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.pipeline import Pipeline
 from app import connect_db
-from app.models.helpers import preprocess_post
 from app.api import from_timestamp
+from app.models.helpers import preprocess_post
 
 def build_psq_classifier(end_date_str=None):
     """Build a predictor of whether or not a question will be closed as 
@@ -46,6 +46,7 @@ def build_psq_classifier(end_date_str=None):
     X_raw = []
     Y_raw = []
 
+    # Fetch closed questions from database
     query = """SELECT * FROM questions WHERE creation_date < '{}' AND 
                closed_reason='off-topic' AND (closed_desc LIKE '%context%'
                OR closed_desc LIKE '%homework%');""".format(end_date_str)
@@ -58,6 +59,7 @@ def build_psq_classifier(end_date_str=None):
 
     num_closed = len(X_raw)
 
+    # Fetch an equal number of un-closed questions
     query = """SELECT * FROM questions WHERE creation_date < %s AND 
                closed_reason IS NULL ORDER BY creation_date LIMIT %s"""
     
@@ -66,20 +68,19 @@ def build_psq_classifier(end_date_str=None):
     for q in cur:
         X_raw.append(q['body_html'])
         Y_raw.append(0)
-    shuff = list(range(len(X_raw)))
-    shuffle(shuff)
+    
     X_raw = [X_raw[i] for i in shuff]
     Y_raw = [Y_raw[i] for i in shuff]
-    
-    test_size = round(.2*len(X_raw))
-    train_size = len(X_raw) - test_size
+   
 
-    X_train = X_raw[:train_size]
-    Y_train = np.array(Y_raw[:train_size])
+    # Hold back 20% of examples as test set
+    X_train, X_test, Y_train, Y_test = train_test_split(
+            X_raw, Y_raw, test_size=0.2)
 
-    X_test = X_raw[train_size:]
-    Y_test = np.array(Y_raw[train_size:])
+    test_size = len(X_test)
+    train_size = len(X_train)
 
+    # Perform grid search to tune parameters for F1-score
     params = [
             {
                 'vectorizer__ngram_range': [(2,2), (2,4), (2,6), (2,8)],
@@ -90,7 +91,8 @@ def build_psq_classifier(end_date_str=None):
         ]
 
 
-    gridsearch = GridSearchCV(clf, params, scoring='f1', n_jobs=4, pre_dispatch=8)
+    gridsearch = GridSearchCV(clf, params, scoring='f1', n_jobs=4, \
+            pre_dispatch=8)
 
     gridsearch.fit(X_train, Y_train)
     clf = gridsearch.best_estimator_

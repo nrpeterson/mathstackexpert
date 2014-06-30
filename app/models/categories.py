@@ -4,6 +4,10 @@ from app import connect_db
 
 
 def create_tag_categories():
+    """Cluster MSE tags in to categories using sklearn AffinityPropogation.
+
+       Any existing category system in the database will be overwritten.
+    """
     con = connect_db()
     cur = con.cursor()
 

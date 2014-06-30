@@ -2,6 +2,10 @@ import datetime as dt
 from app import connect_db
 
 def get_last_updated():
+    """Get the MySQL datetime of the last update to the question list.
+
+       Returns the epoch if no time is listed in the database.
+    """
     con = connect_db()
     cur = con.cursor()
     query = "SELECT * FROM last_updated WHERE description='questions'"
@@ -17,6 +21,7 @@ def get_last_updated():
     return ts
 
 def set_last_updated():
+    """Mark the database as having last been updated now."""
     con = connect_db()
     cur = con.cursor()
     date = dt.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
