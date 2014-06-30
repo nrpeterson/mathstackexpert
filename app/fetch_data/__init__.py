@@ -79,6 +79,8 @@ def process_api_questions(items, check_quality=True):
              specific filters set (as in fetch_recent_questions)
     check_quality -- if True, questions are run through the effort predictor
     """
+    if len(items) == 0:
+        return
     con = connect_db()
     cur = con.cursor()
     qids = [item['question_id'] for item in items]
