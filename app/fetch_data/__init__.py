@@ -57,15 +57,19 @@ def fetch_recent_questions():
     """
     ts = get_last_updated()
     if ts == dt.fromtimestamp(0):
-        ts = dt.fromtimestamp(60*60)
+        ts = dt.fromtimestamp(60*60*8)
     func = "/questions"
     params = {
             'pagesize': 100,
             'order': 'desc',
-            'fromdate': int(mktime((ts - timedelta(hours=1)).timetuple())),
+            'fromdate': int(mktime((ts - timedelta(hours=8)).timetuple())),
             'sort': 'activity',
             'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }
+    with open('/home/ubuntu/mathstackexpert/fetchdata.log', 'a') as f:
+        f.write(str(ts) + '\n')
+        f.write(str(ts-timedelta(hours=6)) + '\n')
+        f.write('\n')
     
     process_each_page(func, params, process_api_questions)
     

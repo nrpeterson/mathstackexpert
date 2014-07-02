@@ -26,11 +26,13 @@ def mse_api_call(func, params):
         params['site'] = 'math'
 
     url = ''.join([base,func,'?',urlencode(params)])
+    print(url)
     response = urlopen(url)
     buf = BytesIO(response.read())
     gz = gzip.GzipFile(fileobj=buf)
     text = gz.read().decode()
     data = json.loads(text)
+    print(data)
     return data
 
 def process_each_page(func, params, proc):
