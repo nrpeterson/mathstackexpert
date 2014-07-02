@@ -30,7 +30,7 @@ def mse_api_call(func, params):
     response = urlopen(url)
     buf = BytesIO(response.read())
     gz = gzip.GzipFile(fileobj=buf)
-    text = gz.read().decode()
+    text = gz.read().decode('utf-8-sig')
     data = json.loads(text)
     print(data)
     return data

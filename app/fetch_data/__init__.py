@@ -66,11 +66,6 @@ def fetch_recent_questions():
             'sort': 'activity',
             'filter': '!*IXk1kM1CRsCvNX-HctMr3GtJ1.gEYTy9JkKKBvy88x)lhGxe1N.aanvfrdZ)D'
     }
-    with open('/home/ubuntu/mathstackexpert/fetchdata.log', 'a') as f:
-        f.write(str(ts) + '\n')
-        f.write(str(ts-timedelta(hours=6)) + '\n')
-        f.write('\n')
-    
     process_each_page(func, params, process_api_questions)
     
     set_last_updated()
