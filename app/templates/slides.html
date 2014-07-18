@@ -115,7 +115,7 @@
 </h1>
 </section>
 <section class="" data-id="443703ea8eb6c0b2861c39d6f5186ceb">
-    <h2>Methods: Categories</h2>
+    <section>    <h2>Methods: Categories</h2>
 <div>
     <br>
 </div>
@@ -136,6 +136,22 @@ This returned 28 clusters, and an examplar for each, e.g.
 </ul>
 </div>
 </div>
+</section>
+<section style="font-size: 80%;">
+    <h2>Affinity Propogation</h2>
+    <ul>
+        <li><em>Responsibility</em> $\{r_{i,j}\}_{i,j}$, initialized to zeros</li>
+        <li><em>Appropriateness</em> $\{a_{i,j}\}_{i,j}$, initialized to zeros</li>
+        <li>Until convergence:
+$$
+\begin{align*}
+r_{i,j}&\leftarrow s_{i,j}-\max_{k\neq j}[a(i,k)+s(i,k)]\\
+a_{i,i}&\leftarrow\sum_{k\neq i}\max\{0,r(k,i)\}\\
+a_{i,j}&\leftarrow\min\left\{0, r(j,j)+\sum_{k\notin\{i,j\}}\max(0,r(k,j))\right\}
+\end{align*}
+$$
+    </ul>
+</section>
 </section>
 <section class="" data-id="e9335fddaa8e343c0cc10dddf81772e3">
     <h2>Methods: Effort Ratings</h2>
